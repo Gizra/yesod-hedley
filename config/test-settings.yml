@@ -1,0 +1,2 @@
+database:
+  database: yesod-hedley_test.sqlite3
