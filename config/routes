@@ -8,4 +8,4 @@
 
 /comments CommentR POST
 /posts PostsR GET POST
-/posts/#PostId  PostR GET PUT DELETE
+/post/#PostId  PostR GET PUT DELETE
