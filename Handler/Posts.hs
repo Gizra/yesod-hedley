@@ -1,5 +1,6 @@
 module Handler.Posts where
 
+import Handler.Post
 import Import
 
 getPostsR :: Handler Value
@@ -13,5 +14,6 @@ postPostsR = do
     post <- requireJsonBody :: Handler Post
     pid <- runDB $ insert post
 
-    return $ object ["data" .= (Entity pid post)]
-    -- sendResponseStatus status201 $ object ["data" .= (Post "foo" "barzz")]
+    returnVal <- getPostR pid
+
+    sendResponseStatus status201 returnVal
