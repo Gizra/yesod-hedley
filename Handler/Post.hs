@@ -14,7 +14,7 @@ putPostR pid = do
 
     runDB $ replace pid post
 
-    sendResponseStatus status200 ("UPDATED" :: Text)
+    sendResponseStatus status204 ()
 
 deletePostR :: PostId -> Handler Value
 deletePostR pid = do
