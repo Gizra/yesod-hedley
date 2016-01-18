@@ -23,6 +23,8 @@ library
                      Handler.Common
                      Handler.Home
                      Handler.Comment
+                     Handler.Posts
+                     Handler.Post
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
