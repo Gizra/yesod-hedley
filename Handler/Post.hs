@@ -20,4 +20,4 @@ deletePostR :: PostId -> Handler Value
 deletePostR pid = do
     runDB $ delete pid
 
-    sendResponseStatus status200 ("DELETED" :: Text)
+    sendResponseStatus status204 ()
