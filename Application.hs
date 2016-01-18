@@ -77,6 +77,9 @@ makeFoundation appSettings = do
     -- Perform database migration using our application's logging settings.
     runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc
 
+    _ <- runSqlPool (insert $ Post "post 1" "body 1") pool
+    _ <- runSqlPool (insert $ Post "post 2" "body 2") pool
+
     -- Return the foundation
     return $ mkFoundation pool
 
