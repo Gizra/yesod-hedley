@@ -29,9 +29,9 @@ instance FromJSON Post where
     parseJSON _ = mzero
 
 -- { "id": 1, "post_id": 1, "content": "The comment content" }
-instance ToJSON (Entity Comment) where
+instance ToJSON (Entity Zcomment) where
     toJSON (Entity cid c) = object
         [ "id"      .= (String $ toPathPiece cid)
-        , "post_id" .= (String $ toPathPiece $ commentPost c)
-        , "content" .= commentContent c
+        , "post_id" .= (String $ toPathPiece $ zcommentPost c)
+        , "content" .= zcommentContent c
         ]

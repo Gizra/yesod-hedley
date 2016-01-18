@@ -16,7 +16,7 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
 Post
   title Text
   content Text
-Comment
+Zcomment
   post PostId
   content Text
 
