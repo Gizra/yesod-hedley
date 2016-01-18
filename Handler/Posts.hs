@@ -8,9 +8,10 @@ getPostsR = do
 
     return $ object ["data" .= posts]
 
-postPostsR :: Handler ()
+postPostsR :: Handler Value
 postPostsR = do
     post <- requireJsonBody :: Handler Post
-    _    <- runDB $ insert post
+    pid <- runDB $ insert post
 
-    sendResponseStatus status201 ("CREATED" :: Text)
+    return $ object ["data" .= (Entity pid post)]
+    -- sendResponseStatus status201 $ object ["data" .= (Post "foo" "barzz")]
