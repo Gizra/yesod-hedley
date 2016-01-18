@@ -72,8 +72,13 @@ makeFoundation appSettings = do
         (sqlDatabase $ appDatabaseConf appSettings)
         (sqlPoolSize $ appDatabaseConf appSettings)
 
+
     -- Perform database migration using our application's logging settings.
     runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc
+
+    _ <- runSqlPool (insert $ Event "My first event") pool
+    _ <- runSqlPool (insert $ Event "My 2nd event") pool
+
 
     -- Return the foundation
     return $ mkFoundation pool
