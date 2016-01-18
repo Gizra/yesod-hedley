@@ -9,7 +9,12 @@ getPostR pid = do
     render <- getUrlRender
     let renderedUrl = render $ PostR pid
 
-    return $ object ["data" .= (Entity pid post), "_self" .= renderedUrl]
+    let returnVal = object
+          [ "data" .= (Entity pid post)
+          , "_self" .= renderedUrl
+          ]
+
+    return returnVal
 
 putPostR :: PostId -> Handler Value
 putPostR pid = do
