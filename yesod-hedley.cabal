@@ -86,7 +86,6 @@ library
                  , time
                  , case-insensitive
                  , wai
-                 , http-types
 
 executable         yesod-hedley
     if flag(library-only)
