@@ -6,7 +6,7 @@ getPostR :: PostId -> Handler Value
 getPostR pid = do
     post <- runDB $ get404 pid
 
-    return $ object ["post" .= (Entity pid post)]
+    return $ object ["data" .= (Entity pid post)]
 
 putPostR :: PostId -> Handler Value
 putPostR pid = do

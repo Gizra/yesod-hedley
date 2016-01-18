@@ -4,9 +4,9 @@ import Import
 
 getPostsR :: Handler Value
 getPostsR = do
-    posts <- runDB $ selectList [] [] :: Handler [Entity Post]
+    posts <- runDB $ selectList [] [ Desc PostId ] :: Handler [Entity Post]
 
-    return $ object ["posts" .= posts]
+    return $ object ["data" .= posts]
 
 postPostsR :: Handler ()
 postPostsR = do
