@@ -13,10 +13,10 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
     userId UserId Maybe
     deriving Eq
     deriving Show
-Post json
+Post
   title Text
   content Text
-Comment json
+Comment
   post PostId
   content Text
 

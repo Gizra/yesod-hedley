@@ -11,3 +11,27 @@ import Database.Persist.Quasi
 -- http://www.yesodweb.com/book/persistent/
 share [mkPersist sqlSettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
+
+
+-- { "id": 1, "title": "A title", "content": "The content" }
+instance ToJSON (Entity Post) where
+    toJSON (Entity pid p) = object
+        [ "id"      .= (String $ toPathPiece pid)
+        , "title"   .= postTitle p
+        , "content" .= postContent p
+        ]
+
+instance FromJSON Post where
+    parseJSON (Object o) = Post
+        <$> o .: "title"
+        <*> o .: "content"
+
+    parseJSON _ = mzero
+
+-- { "id": 1, "post_id": 1, "content": "The comment content" }
+instance ToJSON (Entity Comment) where
+    toJSON (Entity cid c) = object
+        [ "id"      .= (String $ toPathPiece cid)
+        , "post_id" .= (String $ toPathPiece $ commentPost c)
+        , "content" .= commentContent c
+        ]
