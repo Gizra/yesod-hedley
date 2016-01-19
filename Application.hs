@@ -35,6 +35,8 @@ import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
 import Handler.Common
 import Handler.Home
 import Handler.Comment
+import Handler.Events
+import Handler.Event
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -74,6 +76,9 @@ makeFoundation appSettings = do
 
     -- Perform database migration using our application's logging settings.
     runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc
+
+    _ <- runSqlPool (insert $ Event "post 1" "body 1") pool
+    _ <- runSqlPool (insert $ Event "post 2" "body 2") pool
 
     -- Return the foundation
     return $ mkFoundation pool

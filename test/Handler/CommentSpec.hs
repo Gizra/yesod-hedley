@@ -19,8 +19,7 @@ spec = withApp $ do
                 setUrl CommentR
                 setRequestBody encoded
                 addRequestHeader ("Content-Type", "application/json")
-                addTokenFromCookie
-            
+
             statusIs 200
 
             [Entity _id comment] <- runDB $ selectList [CommentMessage ==. message] []
@@ -36,6 +35,4 @@ spec = withApp $ do
                 setUrl CommentR
                 setRequestBody $ encode body
                 addRequestHeader ("Content-Type", "application/json")
-                addTokenFromCookie
             statusIs 400
-
