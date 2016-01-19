@@ -7,5 +7,6 @@
 / HomeR GET POST
 
 /comments CommentR POST
-/posts/#PostId  PostR GET PUT DELETE
-/posts PostsR GET POST
+
+/events/#EventId  EventR GET PUT DELETE
+/events EventsR GET POST

@@ -14,24 +14,16 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 
 
 -- { "id": 1, "title": "A title", "content": "The content" }
-instance ToJSON (Entity Post) where
-    toJSON (Entity pid p) = object
-        [ "id"      .= (String $ toPathPiece pid)
-        , "title"   .= postTitle p
-        , "content" .= postContent p
+instance ToJSON (Entity Event) where
+    toJSON (Entity eid e) = object
+        [ "id"      .= (String $ toPathPiece eid)
+        , "title"   .= eventTitle e
+        , "content" .= eventContent e
         ]
 
-instance FromJSON Post where
-    parseJSON (Object o) = Post
+instance FromJSON Event where
+    parseJSON (Object o) = Event
         <$> o .: "title"
         <*> o .: "content"
 
     parseJSON _ = mzero
-
--- { "id": 1, "post_id": 1, "content": "The comment content" }
-instance ToJSON (Entity Zcomment) where
-    toJSON (Entity cid c) = object
-        [ "id"      .= (String $ toPathPiece cid)
-        , "post_id" .= (String $ toPathPiece $ zcommentPost c)
-        , "content" .= zcommentContent c
-        ]

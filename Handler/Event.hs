@@ -1,13 +1,13 @@
-module Handler.Post where
+module Handler.Event where
 
 import Import
 
-getPostR :: PostId -> Handler Value
-getPostR pid = do
+getEventR :: EventId -> Handler Value
+getEventR pid = do
     post <- runDB $ get404 pid
 
     render <- getUrlRender
-    let renderedUrl = render $ PostR pid
+    let renderedUrl = render $ EventR pid
 
     let returnVal = object
           [ "data" .= (Entity pid post)
@@ -16,16 +16,16 @@ getPostR pid = do
 
     return returnVal
 
-putPostR :: PostId -> Handler Value
-putPostR pid = do
-    post <- requireJsonBody :: Handler Post
+putEventR :: EventId -> Handler Value
+putEventR pid = do
+    post <- requireJsonBody :: Handler Event
 
     runDB $ replace pid post
 
     sendResponseStatus status204 ()
 
-deletePostR :: PostId -> Handler Value
-deletePostR pid = do
+deleteEventR :: EventId -> Handler Value
+deleteEventR pid = do
     runDB $ delete pid
 
     sendResponseStatus status204 ()
