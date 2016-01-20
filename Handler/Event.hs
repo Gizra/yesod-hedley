@@ -9,9 +9,13 @@ getEventR pid = do
     render <- getUrlRender
     let renderedUrl = render $ EventR pid
 
+    let links = object
+          [ "self" .= renderedUrl
+          ]
+
     let returnVal = object
           [ "data" .= (Entity pid post)
-          , "_self" .= renderedUrl
+          , "_links" .= links
           ]
 
     return returnVal
