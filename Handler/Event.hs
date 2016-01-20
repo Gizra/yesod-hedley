@@ -1,6 +1,7 @@
 module Handler.Event where
 
 import Import
+import Data.HashMap.Strict as HashMap (insert)
 
 getEventR :: EventId -> Handler Value
 getEventR eid = do
@@ -9,16 +10,20 @@ getEventR eid = do
     render <- getUrlRender
     let renderedUrl = render $ EventR eid
 
-    let links = object
-          [ "self" .= renderedUrl
-          ]
-
     let returnVal = object
-          [ "data" .= [(Entity eid event)]
-          , "_links" .= links
-          ]
+          [ "data" .= [buildEntityWithLink (Entity eid event) renderedUrl]]
 
     return returnVal
+
+
+buildEntityWithLink :: Entity Event -> Text -> Maybe Value
+buildEntityWithLink entity renderedUrl =
+    case toJSON entity of
+        Object obj ->
+            let links = object ["self" .= renderedUrl]
+                entityWithLink = HashMap.insert "_links" links obj
+            in Just (Object entityWithLink)
+        _ -> Nothing
 
 putEventR :: EventId -> Handler Value
 putEventR eid = do
