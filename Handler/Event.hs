@@ -14,7 +14,7 @@ getEventR eid = do
           ]
 
     let returnVal = object
-          [ "data" .= (Entity eid event)
+          [ "data" .= [(Entity eid event)]
           , "_links" .= links
           ]
 
