@@ -23,7 +23,6 @@ Article json
 
 Company json
     title Text
-    content Text
     userId UserId
     deriving Eq
     deriving Show
