@@ -7,3 +7,5 @@
     $forall Entity uid user <- people
         <li>
             #{userIdent user}
+            $maybe pass <- userPassword user
+              <span>#{show pass}
