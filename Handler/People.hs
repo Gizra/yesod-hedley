@@ -10,12 +10,13 @@ getPeopleR = do
     people <- runDB $ selectList [] [ Desc UserId ] :: Handler [Entity User]
 
     let ppl = map entityVal people
+    let table = Table.buildBootstrap peopleTable ppl
 
     defaultLayout $ do
         setTitle "People List"
-        Table.buildBootstrap peopleTable ppl
+        $(widgetFile "people")
 
 peopleTable :: Table site User
 peopleTable = mempty
-    ++ Table.text   "Username"      userIdent
-    -- ++ Table.text   "Email (todo)"  userPassword
+    ++ Table.text   "Username"  userIdent
+    -- ++ Table.text   "Password"  userPassword -- This should be a maybe
