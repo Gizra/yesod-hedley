@@ -77,11 +77,24 @@ makeFoundation appSettings = do
     -- Perform database migration using our application's logging settings.
     runLoggingT (runSqlPool (runMigration migrateAll) pool) logFunc
 
-    _ <- runSqlPool (insert $ Event "post 1" "body 1") pool
-    _ <- runSqlPool (insert $ Event "post 2" "body 2") pool
+    _ <- migrateData pool
 
     -- Return the foundation
     return $ mkFoundation pool
+
+migrateData pool = do
+    userId1 <- runSqlPool (insert $ User "admin" $ Just "admin") pool
+
+    -- Company
+
+    company1 <- runSqlPool (insert $ Company "company1" userId1) pool
+    company2 <- runSqlPool (insert $ Company "company2" userId1) pool
+
+    -- Event
+
+    _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
+    runSqlPool (insert $ Event "post 2" "body 2" userId1) pool
+
 
 -- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and
 -- applying some additional middlewares.

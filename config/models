@@ -13,9 +13,34 @@ Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived
     userId UserId Maybe
     deriving Eq
     deriving Show
-Event
+
+Article json
     title Text
     content Text
+    userId UserId
+    deriving Eq
     deriving Show
+
+Company json
+    title Text
+    userId UserId
+    deriving Eq
+    deriving Show
+
+Event json
+    title Text
+    content Text
+    userId UserId
+    deriving Eq
+    deriving Show
+
+GroupMembership
+    state GroupMembershipState
+    created UTCTime default=CURRENT_TIME
+    userId UserId
+    companyId CompanyId
+    deriving Eq
+    deriving Show
+
 
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)

@@ -7,7 +7,8 @@ spec = withApp $ do
 
     describe "get single Event" $ do
         it "get single event index" $ do
-            eid <- runDB $ insert $ Event "title" "body"
+            uid <- runDB $ insert $ User "foo" $ Just "bar"
+            eid <- runDB $ insert $ Event "title" "body" uid
             get $ EventR eid
             statusIs 200
 
