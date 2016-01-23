@@ -26,6 +26,7 @@ library
                      Handler.Comment
                      Handler.Events
                      Handler.Event
+                     Handler.People
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

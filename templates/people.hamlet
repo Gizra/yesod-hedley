@@ -1,0 +1,11 @@
+<h1>
+  Welcome to Yesod!
+
+<.page-header><h2>People
+
+<ul>
+    $forall Entity uid user <- people
+        <li>
+            #{userIdent user}
+            $maybe pass <- userPassword user
+              <span>#{show pass}
