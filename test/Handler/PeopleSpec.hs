@@ -6,5 +6,6 @@ spec :: Spec
 spec = withApp $ do
 
     describe "getPeopleR" $ do
-        error "Spec not implemented: getPeopleR"
-
+        it "gives a 200" $ do
+            get $ EventR eid
+            statusIs 200
