@@ -10,4 +10,5 @@
 
 /api/v1.0/events/#EventId  EventR GET PUT DELETE
 /api/v1.0/events EventsR GET POST
+
 /people PeopleR GET

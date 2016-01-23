@@ -3,4 +3,9 @@ module Handler.People where
 import Import
 
 getPeopleR :: Handler Html
-getPeopleR = error "Not yet implemented: getPeopleR"
+getPeopleR = do
+    people <- runDB $ selectList [] [ Desc UserId ] :: Handler [Entity User]
+
+    defaultLayout $ do
+        setTitle "People List"
+        $(widgetFile "people")
