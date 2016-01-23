@@ -2,3 +2,8 @@
   Welcome to Yesod!
 
 <.page-header><h2>People
+
+<ul>
+    $forall Entity uid user <- people
+        <li>
+            #{userIdent user}
