@@ -84,6 +84,7 @@ makeFoundation appSettings = do
     return $ mkFoundation pool
 
 migrateData pool = do
+    -- User
     userId1 <- runSqlPool (insert $ User "admin" $ Just "admin") pool
 
     -- Company
