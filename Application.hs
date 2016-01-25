@@ -85,9 +85,9 @@ makeFoundation appSettings = do
 
 migrateData pool = do
     -- User
-    userId1 <- runSqlPool (insert $ User "admin" $ Just "admin") pool
-    userId2 <- runSqlPool (insert $ User "demo" $ Just "1234") pool
-    userId3 <- runSqlPool (insert $ User "migo" $ Just "1234") pool
+    userId1 <- runSqlPool (insert $ User "admin" "admin@example.com" $ Just "admin") pool
+    userId2 <- runSqlPool (insert $ User "demo" "demo@example.com" $ Just "1234") pool
+    userId3 <- runSqlPool (insert $ User "migo" "migo@example.com" $ Just "1234") pool
 
     -- Company
     company1 <- runSqlPool (insert $ Company "company1" userId1) pool

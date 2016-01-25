@@ -1,5 +1,6 @@
 User
     ident Text
+    email Text
     password Text Maybe
     UniqueUser ident
     deriving Typeable
