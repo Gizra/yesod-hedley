@@ -85,9 +85,9 @@ makeFoundation appSettings = do
 
 migrateData pool = do
     -- User
-    userId1 <- runSqlPool (insert $ User "admin" "admin@example.com" $ Just "admin") pool
-    userId2 <- runSqlPool (insert $ User "demo" "demo@example.com" $ Just "1234") pool
-    userId3 <- runSqlPool (insert $ User "migo" "migo@example.com" $ Just "1234") pool
+    userId1 <- runSqlPool (insert $ createUser "admin") pool
+    userId2 <- runSqlPool (insert $ createUser "demo")  pool
+    userId3 <- runSqlPool (insert $ createUser "migo")  pool
 
     -- Company
     company1 <- runSqlPool (insert $ Company "company1" userId1) pool
@@ -97,6 +97,9 @@ migrateData pool = do
 
     _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
     runSqlPool (insert $ Event "post 2" "body 2" userId1) pool
+    where
+        createUser name =
+            User name $ name ++"@example.com" $ Just "1234" $ Nothing
 
 
 -- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and

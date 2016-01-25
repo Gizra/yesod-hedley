@@ -2,7 +2,8 @@ User
     ident Text
     email Text
     password Text Maybe
-    UniqueUser ident
+    verkey Text Maybe
+    UniqueUser ident email
     deriving Typeable
 Email
     email Text
