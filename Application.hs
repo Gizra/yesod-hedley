@@ -84,27 +84,37 @@ makeFoundation appSettings = do
     return $ mkFoundation pool
 
 migrateData pool = do
-    -- User
-    userId1 <- runSqlPool (insert $ createUser "admin") pool
-    userId2 <- runSqlPool (insert $ createUser "demo")  pool
-    userId3 <- runSqlPool (insert $ createUser "migo")  pool
+    -- Migrate data only if "admin" is missing.
+    maybeUser <- runSqlPool (getBy $ UniqueUser "admin") pool
+    case maybeUser of
+        Just (Entity _ _) -> do
+            putStrLn "---- Skipped migration"
+            return ()
 
-    -- Company
-    company1 <- runSqlPool (insert $ Company "company1" userId1) pool
-    company2 <- runSqlPool (insert $ Company "company2" userId1) pool
+        Nothing -> do
+            -- User
+            userId1 <- runSqlPool (insert $ createUser "admin") pool
+            userId2 <- runSqlPool (insert $ createUser "demo")  pool
+            userId3 <- runSqlPool (insert $ createUser "migo")  pool
 
-    -- Event
+            -- Company
+            _ <- runSqlPool (insert $ Company "company1" userId1) pool
+            _ <- runSqlPool (insert $ Company "company2" userId2) pool
 
-    _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
-    runSqlPool (insert $ Event "post 2" "body 2" userId1) pool
-    where
-        createUser name =
-            User
-                { userIdent = name
-                , userEmail = name ++"@example.com"
-                , userPassword = Nothing
-                , userVerkey = Nothing
-                }
+            -- Event
+            _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
+            _ <- runSqlPool (insert $ Event "post 2" "body 2" userId2) pool
+
+            -- Don't return anything.
+            return ()
+            where
+                createUser name =
+                    User
+                        { userIdent = name
+                        , userEmail = name ++"@example.com"
+                        , userPassword = Nothing
+                        , userVerkey = Nothing
+                        }
 
 -- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and
 -- applying some additional middlewares.
