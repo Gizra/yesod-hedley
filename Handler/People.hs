@@ -19,4 +19,4 @@ getPeopleR = do
 peopleTable :: Table site User
 peopleTable = mempty
     ++ Table.text   "Username"  userIdent
-    ++ Table.text   "Email"  userEmail -- This should be a maybe
+    ++ Table.text   "Email"     userEmail
