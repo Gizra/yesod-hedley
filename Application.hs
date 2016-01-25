@@ -99,8 +99,12 @@ migrateData pool = do
     runSqlPool (insert $ Event "post 2" "body 2" userId1) pool
     where
         createUser name =
-            User name $ name ++"@example.com" $ Just "1234" $ Nothing
-
+            User
+                { userIdent = name
+                , userEmail = name ++"@example.com"
+                , userPassword = Nothing
+                , userVerkey = Nothing
+                }
 
 -- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and
 -- applying some additional middlewares.
