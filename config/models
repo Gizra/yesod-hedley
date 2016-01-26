@@ -6,6 +6,7 @@ User
     UniqueUser ident
     UniqueEmail email
     deriving Typeable
+    deriving Show
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
     message Text
     userId UserId Maybe

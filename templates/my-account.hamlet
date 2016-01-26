@@ -1,0 +1,4 @@
+<h1>
+  Your account
+
+<.page-header><h2>#{show user}
