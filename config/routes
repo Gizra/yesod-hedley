@@ -12,3 +12,4 @@
 /api/v1.0/events EventsR GET POST
 
 /people PeopleR GET
+/account MyAccountR GET

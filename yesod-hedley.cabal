@@ -27,6 +27,7 @@ library
                      Handler.Events
                      Handler.Event
                      Handler.People
+                     Handler.MyAccount
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
