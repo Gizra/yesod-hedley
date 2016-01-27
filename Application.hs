@@ -104,6 +104,7 @@ migrateData pool = do
             -- Company
             company1 <- runSqlPool (insert $ Company "company1" userId1) pool
             company2 <- runSqlPool (insert $ Company "company2" userId2) pool
+            company3 <- runSqlPool (insert $ Company "company3" userId2) pool
 
             -- Event
             _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
@@ -113,6 +114,10 @@ migrateData pool = do
 
             -- Group membership
             _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company1) pool
+            _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company2) pool
+            _ <- runSqlPool (insert $ GroupMembership State.Pending currentTime userId1 company3) pool
+
+            _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId2 company3) pool
 
             -- Don't return anything.
             return ()
