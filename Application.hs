@@ -30,6 +30,8 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
 
+import State
+
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
 import Handler.Common
@@ -100,12 +102,17 @@ migrateData pool = do
             userId3 <- runSqlPool (insert $ createUser "migo")  pool
 
             -- Company
-            _ <- runSqlPool (insert $ Company "company1" userId1) pool
-            _ <- runSqlPool (insert $ Company "company2" userId2) pool
+            company1 <- runSqlPool (insert $ Company "company1" userId1) pool
+            company2 <- runSqlPool (insert $ Company "company2" userId2) pool
 
             -- Event
             _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
             _ <- runSqlPool (insert $ Event "post 2" "body 2" userId2) pool
+
+            currentTime <- getCurrentTime
+
+            -- Group membership
+            _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company1) pool
 
             -- Don't return anything.
             return ()
