@@ -6,6 +6,6 @@ spec :: Spec
 spec = withApp $ do
 
     describe "getMyAccountR" $ do
-        it "gives a 200" $ do
+        it "redirects anon user" $ do
             get MyAccountR
-            statusIs 200
+            statusIs 303
