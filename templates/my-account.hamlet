@@ -2,3 +2,5 @@
   Your account
 
 <.page-header><h2>#{show user}
+
+<div>Welcome back #{userIdent user}
