@@ -12,12 +12,11 @@ getUserR userId = do
     companies <- runDB
            $ E.select
            $ E.from $ \(company `E.InnerJoin` groupMembership) -> do
-                E.on $ company ^. CompanyUserId E.==. groupMembership ^. GroupMembershipUserId
-                E.where_ $ company ^. CompanyUserId E.==. E.val userId
+                E.on $ company ^. CompanyId E.==. groupMembership ^. GroupMembershipCompanyId
+                E.where_ $ groupMembership ^. GroupMembershipUserId E.==. E.val userId
                 E.limit 5
                 return
-                    ( company ^. CompanyId
-                    , company ^. CompanyTitle
+                    ( company ^. CompanyTitle
                     , groupMembership ^. GroupMembershipState
                     )
 
