@@ -14,7 +14,7 @@ getUserR userId = do
            $ E.select
            $ E.from $ \(company `E.InnerJoin` groupMembership) -> do
                 E.on $ company ^. CompanyUserId E.==. groupMembership ^. GroupMembershipUserId
-                E.where_ $ company ^. CompanyUserId E.=. uid -- how to pass ID 1
+                -- E.where_ $ company ^. CompanyUserId E.=. uid -- how to pass ID 1
                 E.limit 5
                 return
                     ( company ^. CompanyId

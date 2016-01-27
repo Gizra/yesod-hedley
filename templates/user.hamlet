@@ -1,4 +1,9 @@
 <h1>
   #{userIdent user}
 
-<.page-header><h2>
+<.page-header><h2>Companies
+
+<ul>
+    $forall (E.Value id, E.Value title, E.Value state) <- companies
+        <li>
+            #{title} (#{show state})
