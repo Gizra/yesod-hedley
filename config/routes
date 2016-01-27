@@ -13,3 +13,4 @@
 
 /people PeopleR GET
 /account MyAccountR GET
+/users/#UserId UserR GET

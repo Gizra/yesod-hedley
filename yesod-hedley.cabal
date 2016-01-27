@@ -28,6 +28,7 @@ library
                      Handler.Event
                      Handler.People
                      Handler.MyAccount
+                     Handler.User
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -90,6 +91,7 @@ library
                  , case-insensitive
                  , wai
                  , yesod-table
+                 , esqueleto
 
 executable         yesod-hedley
     if flag(library-only)

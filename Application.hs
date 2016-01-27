@@ -30,6 +30,8 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
 
+import State
+
 -- Import all relevant handler modules here.
 -- Don't forget to add new modules to your cabal file!
 import Handler.Common
@@ -39,6 +41,7 @@ import Handler.Events
 import Handler.Event
 import Handler.People
 import Handler.MyAccount
+import Handler.User
 
 -- This line actually creates our YesodDispatch instance. It is the second half
 -- of the call to mkYesodData which occurs in Foundation.hs. Please see the
@@ -99,12 +102,22 @@ migrateData pool = do
             userId3 <- runSqlPool (insert $ createUser "migo")  pool
 
             -- Company
-            _ <- runSqlPool (insert $ Company "company1" userId1) pool
-            _ <- runSqlPool (insert $ Company "company2" userId2) pool
+            company1 <- runSqlPool (insert $ Company "company1" userId1) pool
+            company2 <- runSqlPool (insert $ Company "company2" userId2) pool
+            company3 <- runSqlPool (insert $ Company "company3" userId2) pool
 
             -- Event
             _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
             _ <- runSqlPool (insert $ Event "post 2" "body 2" userId2) pool
+
+            currentTime <- getCurrentTime
+
+            -- Group membership
+            _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company1) pool
+            _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company2) pool
+            _ <- runSqlPool (insert $ GroupMembership State.Pending currentTime userId1 company3) pool
+
+            _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId2 company3) pool
 
             -- Don't return anything.
             return ()
