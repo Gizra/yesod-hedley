@@ -1,0 +1,4 @@
+<h1>
+  My Account
+
+<.page-header><h2>Welcome back #{userIdent user}
