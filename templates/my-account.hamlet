@@ -1,6 +1,4 @@
 <h1>
-  Your account
+  My Account
 
-<.page-header><h2>#{show user}
-
-<div>Welcome back #{userIdent user}
+<.page-header><h2>Welcome back #{userIdent user}
