@@ -6,5 +6,6 @@ spec :: Spec
 spec = withApp $ do
 
     describe "getMyAccountR" $ do
-        error "Spec not implemented: getMyAccountR"
-
+        it "gives a 200" $ do
+            get MyAccountR
+            statusIs 200
