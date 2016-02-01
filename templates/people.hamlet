@@ -4,3 +4,6 @@
 <.page-header><h2>People
 
 ^{table}
+
+<div .pagination>
+  ^{pagerWidget}
