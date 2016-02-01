@@ -92,6 +92,7 @@ library
                  , wai
                  , yesod-table
                  , esqueleto
+                 , yesod-paginator
 
 executable         yesod-hedley
     if flag(library-only)

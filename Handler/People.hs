@@ -4,10 +4,12 @@ import Import
 
 import Yesod.Table (Table)
 import qualified Yesod.Table as Table
+import Yesod.Paginator
+
 
 getPeopleR :: Handler Html
 getPeopleR = do
-    people <- runDB $ selectList [] [ Desc UserId ] :: Handler [Entity User]
+    (people, pagerWidget) <- runDB $ selectPaginated 2 [] [ Desc UserId ] :: Handler [Entity User]
 
     let ppl = map entityVal people
     let table = Table.buildBootstrap peopleTable ppl
