@@ -5,7 +5,7 @@ import Import
 
 getEventsR :: Handler Value
 getEventsR = do
-    events <- runDB $ selectList [] [ Desc EventId ] :: Handler [Entity Event]
+    events <- runDB $ selectList [] [ Desc EventId, LimitTo 5 ] :: Handler [Entity Event]
 
     return $ object ["data" .= events]
 
