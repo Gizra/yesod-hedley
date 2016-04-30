@@ -43,12 +43,12 @@ addOrder selectOpt = do
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
-orderText2SelectOpt []           = []
-orderText2SelectOpt ("id" : xs)  = [ Asc EventId] ++ (orderFunc xs)
-orderText2SelectOpt ("-id" : xs) = [ Desc EventId] ++ (orderFunc xs)
+orderText2SelectOpt []              = []
+orderText2SelectOpt ("id" : xs)     = [ Asc EventId] ++ (orderFunc xs)
+orderText2SelectOpt ("-id" : xs)    = [ Desc EventId] ++ (orderFunc xs)
 orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderFunc xs)
 orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderFunc xs)
-orderText2SelectOpt (_ : xs)     = [] ++ (orderFunc xs)
+orderText2SelectOpt (_ : xs)        = [] ++ (orderFunc xs)
 
 getEventsR :: Handler Value
 getEventsR = do
