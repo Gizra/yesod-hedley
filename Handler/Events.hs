@@ -28,7 +28,7 @@ addPager resultsPerPage selectOpt  = do
 addOrder :: ( Yesod m
             )
          => [SelectOpt Event]
-         -> YesodDB m [ SelectOpt Event ]
+         -> HandlerT m IO [ SelectOpt Event ]
 addOrder selectOpt = do
   morder <- lookupGetParam "order"
   let order = case morder of
@@ -40,11 +40,9 @@ addOrder selectOpt = do
 
 getEventsR :: Handler Value
 getEventsR = do
-    selectOpt <- addPager 5 []
-    events <- runDB $
-        selectList
-            []
-            selectOpt :: Handler [Entity Event]
+    selectOpt <- (addPager 5) []
+    selectOpt' <- addOrder selectOpt
+    events <- runDB $ selectList [] selectOpt' :: Handler [Entity Event]
 
     return $ object ["data" .= events]
 
