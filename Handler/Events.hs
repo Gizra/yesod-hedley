@@ -1,8 +1,7 @@
 module Handler.Events where
 
-import qualified Data.HashMap.Strict as HM
 import qualified Data.Text           as T  (splitOn)
-import qualified Data.Text.Read      as T
+import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
 
@@ -52,7 +51,7 @@ orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
 
 getEventsR :: Handler Value
 getEventsR = do
-    selectOpt <- (addPager 5) [] >>= addOrder
+    selectOpt <- (addPager 2) [] >>= addOrder
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
     return $ object ["data" .= events]
