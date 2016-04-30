@@ -25,7 +25,8 @@ addPager resultsPerPage selectOpt  = do
 
 
 -- Generalize
-addOrder :: ( Yesod m
+addOrder :: ( PersistQuery (YesodPersistBackend m)
+            , Yesod m
             )
          => [SelectOpt Event]
          -> HandlerT m IO [ SelectOpt Event ]
@@ -40,9 +41,8 @@ addOrder selectOpt = do
 
 getEventsR :: Handler Value
 getEventsR = do
-    selectOpt <- (addPager 5) []
-    selectOpt' <- addOrder selectOpt
-    events <- runDB $ selectList [] selectOpt' :: Handler [Entity Event]
+    selectOpt <- (addPager 5) [] >>= addOrder
+    events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
     return $ object ["data" .= events]
 
