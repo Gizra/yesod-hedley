@@ -1,11 +1,23 @@
 module Handler.Events where
 
+import qualified Data.Text.Read as T
 import Handler.Event
 import Import
 
 getEventsR :: Handler Value
 getEventsR = do
-    events <- runDB $ selectList [] [ Desc EventId, LimitTo 5 ] :: Handler [Entity Event]
+    let resultsPerPage = 1
+    mpage <- lookupGetParam "page"
+    let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
+                        Left _ -> 0
+                        Right (val, _) -> val
+    events <- runDB $
+        selectList
+            []
+            [ Desc EventId
+            , LimitTo resultsPerPage
+            , OffsetBy $ (pageNumber - 1) * resultsPerPage
+            ] :: Handler [Entity Event]
 
     return $ object ["data" .= events]
 
