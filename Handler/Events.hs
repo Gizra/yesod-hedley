@@ -1,8 +1,10 @@
 module Handler.Events where
 
-import qualified Data.Text.Read as T
-import Handler.Event
-import Import
+import qualified Data.HashMap.Strict as HM
+import qualified Data.Text           as T  (splitOn)
+import qualified Data.Text.Read      as T
+import           Handler.Event
+import           Import
 
 
 addPager :: ( PersistEntity val
@@ -24,7 +26,7 @@ addPager resultsPerPage selectOpt  = do
   return $ selectOpt `mappend` pagerOpt
 
 
--- Generalize
+-- @todo: Generalize not to be only for Event
 addOrder :: ( PersistQuery (YesodPersistBackend m)
             , Yesod m
             )
@@ -32,12 +34,21 @@ addOrder :: ( PersistQuery (YesodPersistBackend m)
          -> HandlerT m IO [ SelectOpt Event ]
 addOrder selectOpt = do
   morder <- lookupGetParam "order"
+
   let order = case morder of
-                  Nothing -> Desc EventId
-                  Just val -> Asc EventId
+                  Nothing -> [ Desc EventId ]
+                  Just vals -> orderText2SelectOpt $ T.splitOn "," vals
 
-  return $ selectOpt `mappend` [order]
+  return $ selectOpt `mappend` order
 
+
+orderText2SelectOpt :: [Text] -> [SelectOpt Event]
+orderText2SelectOpt []           = []
+orderText2SelectOpt ("id" : xs)  = [ Asc EventId] ++ (orderFunc xs)
+orderText2SelectOpt ("-id" : xs) = [ Desc EventId] ++ (orderFunc xs)
+orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderFunc xs)
+orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderFunc xs)
+orderText2SelectOpt (_ : xs)     = [] ++ (orderFunc xs)
 
 getEventsR :: Handler Value
 getEventsR = do
