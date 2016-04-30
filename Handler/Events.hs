@@ -40,6 +40,24 @@ addOrder selectOpt = do
 
   return $ selectOpt `mappend` order
 
+addListMetaData :: ( PersistQuery (YesodPersistBackend m)
+            , Yesod m
+            )
+         => HashMap Text Value
+         -> HandlerT m IO (HashMap Text Value)
+addListMetaData json = do
+  mpage <- lookupGetParam "page"
+  let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
+                      Left _ -> 1
+                      Right (val, _) -> val + 1
+
+  let metaData =
+        [ "_links" .= object
+            [ "self" .= String "http://example.com"
+            ]
+        ]
+  return json
+
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
 orderText2SelectOpt []              = []
