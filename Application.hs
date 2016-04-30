@@ -109,6 +109,11 @@ migrateData pool = do
             -- Event
             _ <- runSqlPool (insert $ Event "post 1" "body 1" userId1) pool
             _ <- runSqlPool (insert $ Event "post 2" "body 2" userId2) pool
+            _ <- runSqlPool (insert $ Event "post 3" "body 3" userId3) pool
+
+            _ <- runSqlPool (insert $ Event "post 4" "body 4" userId1) pool
+            _ <- runSqlPool (insert $ Event "post 5" "body 5" userId2) pool
+            _ <- runSqlPool (insert $ Event "post 6" "body 6" userId3) pool
 
             currentTime <- getCurrentTime
 
