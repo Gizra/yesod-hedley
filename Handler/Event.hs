@@ -1,7 +1,8 @@
 module Handler.Event where
 
 import Import
-import Data.HashMap.Strict as HashMap (insert)
+
+
 
 getEventR :: EventId -> Handler Value
 getEventR eid = do

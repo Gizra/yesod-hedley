@@ -17,9 +17,12 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 
 instance ToJSON (Entity Event) where
     toJSON (Entity eid e) = object
-        [ "id"      .= (String $ toPathPiece eid)
+        [ "id"      .= (toPathPiece eid)
         , "title"   .= eventTitle e
-        , "content" .= eventContent e
+        , "self" .= object
+            [ "title" .= String "Self"
+            -- "href" .= render EventR eid
+            ]
         ]
 
 instance FromJSON Event where
