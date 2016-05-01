@@ -64,6 +64,7 @@ addListMetaData :: KeyValue t
 addListMetaData keyValues = do
   render <- getUrlRender
   totalCount <- getTotalCount []
+  currentPage <- getCurrentPage
 
   let metaData =
         [ "self" .= object
@@ -73,7 +74,27 @@ addListMetaData keyValues = do
         , "count" .= totalCount
         ]
 
+  -- let previousNext = getPreviousNextPagerLinks totalCount 5 currentPage render
+
   return $ keyValues `mappend` metaData
+
+{-| Get the previous and next pager links, if applicable.
+-}
+-- getPreviousNextPagerLinks :: (KeyValue t, ToJSON v)
+--                           => Int
+--                           -> Int
+--                           -> Int
+--                           -> (Route App -> v)
+--                           -> [t]
+getPreviousNextPagerLinks totalCount resultsPerPage currentPage render =
+  previous ++ next
+    where previous =
+              [ "self" .= object
+                  [ "href" .= render EventsR
+                  , "title" .= String "Previous"
+                  ]
+              ]
+          next = []
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
