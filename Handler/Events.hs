@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (splitOn)
+import qualified Data.Text           as T  (splitOn, unpack)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -75,14 +75,16 @@ addListMetaData keyValues = do
 
   return $ keyValues `mappend` metaData
 
-
+{-| Convert a query string order to an SQL order.
+    @todo : Convert error to proper exception
+-}
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
 orderText2SelectOpt []              = []
 orderText2SelectOpt ("id" : xs)     = [ Asc EventId] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt ("-id" : xs)    = [ Desc EventId] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
+orderText2SelectOpt (x : _)        = error $ "Order " ++ (T.unpack x) ++ "is invalid"
 
 getEventsR :: Handler Value
 getEventsR = do
