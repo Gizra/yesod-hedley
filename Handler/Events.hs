@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (pack, splitOn)
+import qualified Data.Text           as T  (splitOn)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -45,16 +45,11 @@ addListMetaData :: KeyValue t
                 => [t]
                 -> HandlerT App IO ([t])
 addListMetaData keyValues = do
-  mpage <- lookupGetParam "page"
-  let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
-                      Left _ -> 1 :: Integer
-                      Right (val, _) -> (val :: Integer) + 1
-
   render <- getUrlRender
   let metaData =
-        [ "_links" .= object
-            [ "self" .= render EventsR
-            , "page" .= pageNumber
+        [ "self" .= object
+            [ "href" .= render EventsR
+            , "title" .= String "Self"
             ]
         ]
   return $ keyValues `mappend` metaData
