@@ -1,6 +1,7 @@
 module Handler.Events where
 
-import qualified Data.Text           as T  (splitOn)
+import           Data.Aeson
+import qualified Data.Text           as T  (pack, splitOn)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -40,23 +41,23 @@ addOrder selectOpt = do
 
   return $ selectOpt `mappend` order
 
-addListMetaData :: ( PersistQuery (YesodPersistBackend m)
-            , Yesod m
-            )
-         => HashMap Text Value
-         -> HandlerT m IO (HashMap Text Value)
+addListMetaData :: KeyValue t
+                => [t]
+                -> HandlerT App IO ([t])
 addListMetaData json = do
   mpage <- lookupGetParam "page"
   let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
-                      Left _ -> 1
-                      Right (val, _) -> val + 1
+                      Left _ -> 1 :: Integer
+                      Right (val, _) -> (val :: Integer) + 1
 
+  render <- getUrlRender
   let metaData =
         [ "_links" .= object
-            [ "self" .= String "http://example.com"
+            [ "self" .= render EventsR
+            -- , "page" .= Number pageNumber
             ]
         ]
-  return json
+  return $ json `mappend` metaData
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
@@ -72,7 +73,8 @@ getEventsR = do
     selectOpt <- (addPager 2) [] >>= addOrder
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
-    return $ object ["data" .= events]
+    eventsWithMetaData <- addListMetaData ["data" .= events]
+    return $ object eventsWithMetaData
 
 postEventsR :: Handler Value
 postEventsR = do
