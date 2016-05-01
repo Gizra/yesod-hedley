@@ -7,6 +7,9 @@ import           Handler.Event
 import           Import
 
 
+{-| Get the current page value parsed to integer.
+  @todo: Throw exception
+-}
 getCurrentPage :: ( PersistQuery (YesodPersistBackend m)
                   , Yesod m
                   )
@@ -14,7 +17,7 @@ getCurrentPage :: ( PersistQuery (YesodPersistBackend m)
 getCurrentPage = do
   mpage <- lookupGetParam "page"
   let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
-                      Left _ -> 0
+                      Left _ -> error "Page ID is invalid"
                       Right (val, _) -> val
   return pageNumber
 
