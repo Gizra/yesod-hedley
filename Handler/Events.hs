@@ -44,7 +44,7 @@ addOrder selectOpt = do
 addListMetaData :: KeyValue t
                 => [t]
                 -> HandlerT App IO ([t])
-addListMetaData json = do
+addListMetaData keyValues = do
   mpage <- lookupGetParam "page"
   let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
                       Left _ -> 1 :: Integer
@@ -54,10 +54,10 @@ addListMetaData json = do
   let metaData =
         [ "_links" .= object
             [ "self" .= render EventsR
-            -- , "page" .= Number pageNumber
+            , "page" .= pageNumber
             ]
         ]
-  return $ json `mappend` metaData
+  return $ keyValues `mappend` metaData
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
