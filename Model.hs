@@ -3,6 +3,8 @@
 module Model where
 
 import ClassyPrelude.Yesod
+import Database.Persist.Sql (fromSqlKey)
+
 import Database.Persist.Quasi
 import State
 import Yesod.Auth.Email
@@ -17,7 +19,7 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
 
 instance ToJSON (Entity Event) where
     toJSON (Entity eid e) = object
-        [ "id"      .= (toPathPiece eid)
+        [ "id"      .= (fromSqlKey eid)
         , "title"   .= eventTitle e
         , "user"   .= eventUserId e
         , "self" .= object
