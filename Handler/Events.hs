@@ -86,7 +86,7 @@ orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
 
 getEventsR :: Handler Value
 getEventsR = do
-    selectOpt <- (addPager 2) [] >>= addOrder
+    selectOpt <- (addPager 2) >=> addOrder $ []
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
     eventsWithMetaData <- addListMetaData ["data" .= events]
