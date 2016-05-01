@@ -72,6 +72,7 @@ addListMetaData keyValues = do
             ]
         , "count" .= totalCount
         ]
+
   return $ keyValues `mappend` metaData
 
 
