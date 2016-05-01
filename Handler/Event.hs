@@ -6,7 +6,7 @@ import Data.HashMap.Strict as HashMap (insert)
 getEventR :: EventId -> Handler Value
 getEventR eid = do
     event <- runDB $ get404 eid
-    return $ object ["data" .= event]
+    return $ object ["data" .= (Entity eid event)]
 
 
 putEventR :: EventId -> Handler Value
