@@ -19,6 +19,7 @@ instance ToJSON (Entity Event) where
     toJSON (Entity eid e) = object
         [ "id"      .= (toPathPiece eid)
         , "title"   .= eventTitle e
+        , "user"   .= eventUserId e
         , "self" .= object
             [ "title" .= String "Self"
             -- "href" .= render EventR eid
@@ -29,6 +30,6 @@ instance FromJSON Event where
     parseJSON (Object o) = Event
         <$> o .: "title"
         <*> o .: "content"
-        <*> o .: "userId"
+        <*> o .: "user"
 
     parseJSON _ = mzero
