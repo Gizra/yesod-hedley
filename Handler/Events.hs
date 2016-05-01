@@ -41,18 +41,29 @@ addOrder selectOpt = do
 
   return $ selectOpt `mappend` order
 
+getTotalCount :: ( YesodPersist site
+                 , YesodPersistBackend site ~ SqlBackend
+                 )
+              => [Filter Event]
+              -> HandlerT site IO Int
+getTotalCount filters =
+  runDB $ count (filters :: [Filter Event])
+
 addListMetaData :: KeyValue t
                 => [t]
                 -> HandlerT App IO ([t])
 addListMetaData keyValues = do
   render <- getUrlRender
-  let metaData =
+  totalCount <- getTotalCount []
+
+  let count = [ "count" .= totalCount ]
+  let selfLink =
         [ "self" .= object
             [ "href" .= render EventsR
             , "title" .= String "Self"
             ]
         ]
-  return $ keyValues `mappend` metaData
+  return $ keyValues `mappend` selfLink `mappend` count
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
