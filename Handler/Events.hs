@@ -66,14 +66,11 @@ addListMetaData keyValues = do
   totalCount <- getTotalCount []
 
   let metaData =
-        [ "self" .= object
-            [ "href" .= render EventsR
-            , "title" .= String "Self"
-            ]
+        [ "self" .= render EventsR
         , "count" .= totalCount
         ]
 
-  return $ keyValues `mappend` metaData
+  return $ keyValues ++ metaData
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
