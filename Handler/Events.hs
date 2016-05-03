@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (splitOn)
+import qualified Data.Text           as T
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -72,6 +72,22 @@ addListMetaData keyValues = do
 
   return $ keyValues ++ metaData
 
+
+text2Order :: Text -> [SelectOpt Event]
+text2Order text =
+  case lookup (text' text) of
+    Just val -> [direction val]
+    Nothing -> error "wrong order"
+  where
+    keyVal = [ ("id"   , EventId)
+             , ("title", EventTitle)
+             ]
+    text' = if T.isPrefixOf "-" text
+              then T.tail text
+              else text
+    direction = if T.isPrefixOf "-" text
+      then Desc
+      else Asc
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
 orderText2SelectOpt []              = []
