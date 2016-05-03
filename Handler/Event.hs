@@ -1,6 +1,16 @@
 module Handler.Event where
 
+import Data.Aeson
+import Database.Persist.Sql (fromSqlKey)
 import Import
+
+
+addMetaData :: KeyValue t
+            => EventId
+            -> HandlerT App IO ([t])
+addMetaData eid = do
+    render <- getUrlRender
+    return [ "self" .= (render $ EventR eid) ]
 
 
 

@@ -66,10 +66,7 @@ addListMetaData keyValues = do
   totalCount <- getTotalCount []
 
   let metaData =
-        [ "self" .= object
-            [ "href" .= render EventsR
-            , "title" .= String "Self"
-            ]
+        [ "self" .= render EventsR
         , "count" .= totalCount
         ]
 

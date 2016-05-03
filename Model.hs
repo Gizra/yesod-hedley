@@ -17,15 +17,12 @@ share [mkPersist sqlSettings, mkMigrate "migrateAll"]
     $(persistFileWith lowerCaseSettings "config/models")
 
 
+
 instance ToJSON (Entity Event) where
     toJSON (Entity eid e) = object
-        [ "id"      .= (fromSqlKey eid)
-        , "title"   .= eventTitle e
-        , "user"   .= eventUserId e
-        , "self" .= object
-            [ "title" .= String "Self"
-            -- "href" .= render EventR eid
-            ]
+        [ "id"    .= (fromSqlKey eid)
+        , "title" .= eventTitle e
+        , "user"  .= eventUserId e
         ]
 
 instance FromJSON Event where
