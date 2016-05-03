@@ -9,16 +9,14 @@ import           Import
 
 addMetaData :: EventId
             -> Event
-            -> HandlerT App IO (Maybe Value)
+            -> HandlerT App IO (Maybe (HashMap Text Value))
 addMetaData eid event = do
     render <- getUrlRender
     let self = String . render $ EventR eid
     let result =
           case toJSON (Entity eid event) of
-              Object obj ->
-                  let obj' = HM.insert "self" self obj
-                  in Just $ Object obj'
-              _ -> Nothing
+              Object obj -> Just $ HM.insert "self" self obj
+              _          -> Nothing
 
     return $ result
 
