@@ -1,6 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
+import qualified Data.HashMap.Strict  as HM (insert)
 import qualified Data.Text           as T  (splitOn)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
@@ -86,8 +87,11 @@ getEventsR = do
     selectOpt <- (addPager 2) >=> addOrder $ []
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
-    eventsWithMetaData <- addListMetaData ["data" .= events]
+    maybeEvents <- sequenceA [addMetaData eid event | Entity eid event <- events]
+
+    eventsWithMetaData <- addListMetaData ["data" .= maybeEvents]
     return $ object eventsWithMetaData
+
 
 postEventsR :: Handler Value
 postEventsR = do
