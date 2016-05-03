@@ -1,7 +1,6 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.HashMap.Strict  as HM (insert)
 import qualified Data.Text           as T  (splitOn)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
