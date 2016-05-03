@@ -1,12 +1,15 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (splitOn)
+import qualified Data.Text           as T  (splitOn, unpack)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
 
 
+{-| Get the current page value parsed to integer.
+  @todo: Throw exception
+-}
 getCurrentPage :: ( PersistQuery (YesodPersistBackend m)
                   , Yesod m
                   )
@@ -14,7 +17,7 @@ getCurrentPage :: ( PersistQuery (YesodPersistBackend m)
 getCurrentPage = do
   mpage <- lookupGetParam "page"
   let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
-                      Left _ -> 0
+                      Left _ -> error "Page ID is invalid"
                       Right (val, _) -> val
   return pageNumber
 
@@ -72,14 +75,16 @@ addListMetaData keyValues = do
 
   return $ keyValues ++ metaData
 
-
+{-| Convert a query string order to an SQL order.
+    @todo : Convert error to proper exception
+-}
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
 orderText2SelectOpt []              = []
 orderText2SelectOpt ("id" : xs)     = [ Asc EventId] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt ("-id" : xs)    = [ Desc EventId] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
+orderText2SelectOpt (x : _)        = error $ "Order " ++ (T.unpack x) ++ "is invalid"
 
 getEventsR :: Handler Value
 getEventsR = do
