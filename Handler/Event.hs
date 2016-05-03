@@ -1,23 +1,34 @@
 module Handler.Event where
 
-import Data.Aeson
-import Database.Persist.Sql (fromSqlKey)
-import Import
+import           Data.Aeson
+import           Data.Aeson.Types           (Value( String ))
+import           Database.Persist.Sql       (fromSqlKey)
+import qualified Data.HashMap.Strict  as HM (insert)
+import           Import
 
 
-addMetaData :: KeyValue t
-            => EventId
-            -> HandlerT App IO ([t])
-addMetaData eid = do
+addMetaData :: EventId
+            -> Event
+            -> HandlerT App IO (Maybe Value)
+addMetaData eid event = do
     render <- getUrlRender
-    return [ "self" .= (render $ EventR eid) ]
+    let self = String . render $ EventR eid
+    let result =
+          case toJSON (Entity eid event) of
+              Object obj ->
+                  let obj' = HM.insert "self" self obj
+                  in Just $ Object obj'
+              _ -> Nothing
 
+    return $ result
 
 
 getEventR :: EventId -> Handler Value
 getEventR eid = do
     event <- runDB $ get404 eid
-    return $ object ["data" .= (Entity eid event)]
+    eventWithMetaData <- addMetaData eid event
+
+    return $ object ["data" .= eventWithMetaData]
 
 
 putEventR :: EventId -> Handler Value

@@ -70,7 +70,7 @@ addListMetaData keyValues = do
         , "count" .= totalCount
         ]
 
-  return $ keyValues `mappend` metaData
+  return $ keyValues ++ metaData
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
