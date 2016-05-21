@@ -75,19 +75,22 @@ addListMetaData keyValues = do
 
 text2Order :: Text -> [SelectOpt Event]
 text2Order text =
-  case lookup (text' text) of
+  case lookup textWithNoPrefix keyVal of
     Just val -> [direction val]
     Nothing -> error "wrong order"
   where
-    keyVal = [ ("id"   , EventId)
-             , ("title", EventTitle)
+    keyVal = [ ("title", EventTitle)
+             , ("user" , EventUserId)
+             , ("id"   , EventId)
              ]
-    text' = if T.isPrefixOf "-" text
+
+    textWithNoPrefix = if T.isPrefixOf "-" text
               then T.tail text
               else text
+
     direction = if T.isPrefixOf "-" text
-      then Desc
-      else Asc
+              then Desc
+              else Asc
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
 orderText2SelectOpt []              = []
