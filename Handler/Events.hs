@@ -50,20 +50,6 @@ addOrder selectOpt = do
 
   return $ selectOpt `mappend` order
 
-filterQuery :: ( PersistQuery (YesodPersistBackend site)
-                , Yesod site
-                )
-             => [ Filter Event ]
-             -> HandlerT site IO [ Filter Event ]
-filterQuery currentFilters = do
-
-  mfilters <- lookupGetParam "filter"
-
-  let filters = case mfilters of
-                  Nothing -> []
-                  Just vals -> [EventTitle ==. "post 6" ]
-
-  return $ currentFilters ++ filters
 
 getTotalCount :: ( YesodPersist site
                  , YesodPersistBackend site ~ SqlBackend
@@ -96,11 +82,25 @@ orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderText2SelectOpt 
 orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderText2SelectOpt xs)
 orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
 
+
+filterQuery :: Maybe Text -> [Filter Event] -> [Filter Event]
+filterQuery mfilters currentFilters =
+    currentFilters ++ filters
+    where filters = case mfilters of
+                    Nothing -> []
+                    Just vals -> [ EventTitle ==. "post 6" ]
+
+
 getEventsR :: Handler Value
 getEventsR = do
     selectOpt <- (addPager 2) >=> addOrder $ []
-    filters <- filterQuery $ []
+
+
+    mfilters <- lookupGetParam "filter"
+
+    let filters = filterQuery mfilters []
     events <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
+
 
     maybeEvents <- sequenceA [addMetaData eid event | Entity eid event <- events]
 
