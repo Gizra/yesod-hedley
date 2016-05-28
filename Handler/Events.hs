@@ -7,25 +7,25 @@ import           Handler.Event
 import           Import
 
 
-getCurrentPage :: Maybe Text -> Int
+getCurrentPage :: Maybe Text -> Either Text Int
 getCurrentPage mpage =
     case (T.decimal $ fromMaybe "0" mpage) of
-        Left _ -> 0
-        Right (val, _) -> val
+        Left _ -> Left $ T.pack "Invalid pager ID"
+        Right (val, _) -> Right val
 
 addPager :: Maybe Text
          -> Int
-         -> [ SelectOpt val ]
-         -> [ SelectOpt val ]
+         -> [ SelectOpt Event ]
+         -> Either Text [ SelectOpt Event ]
 addPager mpage resultsPerPage selectOpt =
-    selectOpt ++ pagerOpt
-    where pageNumber = getCurrentPage mpage
-          pagerOpt = [ LimitTo resultsPerPage
-                     , OffsetBy $ (pageNumber - 1) * resultsPerPage
-                     ]
+    case getCurrentPage mpage of
+        Left val -> Left val
+        Right pageNumber ->
+            let pagerOpt = [ LimitTo resultsPerPage
+                           , OffsetBy $ (pageNumber - 1) * resultsPerPage
+                           ]
+            in Right $ selectOpt ++ pagerOpt
 
-
--- @todo: Generalize not to be only for Event
 addOrder :: Maybe Text
          -> [SelectOpt Event]
          -> Either Text [ SelectOpt Event ]
@@ -93,7 +93,7 @@ getEventsR = do
     mpage <- lookupGetParam "page"
     morder <- lookupGetParam "order"
 
-    let selectOpt = case (addPager mpage 2) <$> addOrder morder [] of
+    let selectOpt = case (addPager mpage 2) <*> addOrder morder [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
