@@ -45,18 +45,18 @@ getTotalCount filters =
   runDB $ count (filters :: [Filter Event])
 
 addListMetaData :: KeyValue t
-                => [t]
-                -> HandlerT App IO ([t])
-addListMetaData keyValues = do
-  render <- getUrlRender
-  totalCount <- getTotalCount []
+                => (Route App -> Text)
+                -> Int
+                -> [t]
+                -> [t]
+addListMetaData urlRender totalCount keyValues =
+    keyValues ++ metaData
 
-  let metaData =
-        [ "self" .= render EventsR
-        , "count" .= totalCount
-        ]
+    where metaData =
+            [ "self" .= urlRender EventsR
+            , "count" .= totalCount
+            ]
 
-  return $ keyValues ++ metaData
 
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
@@ -72,15 +72,16 @@ getEventsR = do
     mpage <- lookupGetParam "page"
     morder <- lookupGetParam "order"
 
-    -- selectOpt <- (addPager mpage 2) >=> addOrder $ []
     let selectOpt = (addPager mpage 2) . (addOrder morder) $ []
+
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
     urlRender <- getUrlRender
-
     let maybeEvents = [addMetaData urlRender eid event | Entity eid event <- events]
 
-    eventsWithMetaData <- addListMetaData ["data" .= maybeEvents]
+    totalCount <- getTotalCount []
+
+    let eventsWithMetaData = addListMetaData urlRender totalCount ["data" .= maybeEvents]
     return $ object eventsWithMetaData
 
 
