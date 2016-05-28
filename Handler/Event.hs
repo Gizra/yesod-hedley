@@ -7,24 +7,22 @@ import qualified Data.HashMap.Strict  as HM (insert)
 import           Import
 
 
-addMetaData :: EventId
+addMetaData :: (Route App -> Text)
+            -> EventId
             -> Event
-            -> HandlerT App IO (Maybe (HashMap Text Value))
-addMetaData eid event = do
-    render <- getUrlRender
-    let self = String . render $ EventR eid
-    let result =
-          case toJSON (Entity eid event) of
-              Object obj -> Just $ HM.insert "self" self obj
-              _          -> Nothing
+            -> Maybe (HashMap Text Value)
+addMetaData urlRender eid event =
+    case toJSON (Entity eid event) of
+        Object obj -> Just $ HM.insert "self" self obj
+        _          -> Nothing
 
-    return $ result
-
+    where self = String . urlRender $ EventR eid
 
 getEventR :: EventId -> Handler Value
 getEventR eid = do
     event <- runDB $ get404 eid
-    eventWithMetaData <- addMetaData eid event
+    urlRender <- getUrlRender
+    let eventWithMetaData = addMetaData urlRender eid event
 
     return $ object ["data" .= eventWithMetaData]
 
