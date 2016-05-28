@@ -13,22 +13,16 @@ getCurrentPage mpage =
         Left _ -> 0
         Right (val, _) -> val
 
-addPager :: ( PersistEntity val
-            , PersistEntityBackend val ~ YesodPersistBackend m
-            , PersistQuery (YesodPersistBackend m)
-            , Yesod m
-            )
-         => Int
+addPager :: Maybe Text
+         -> Int
          -> [ SelectOpt val ]
-         -> HandlerT m IO [ SelectOpt val ]
-addPager resultsPerPage selectOpt  = do
-  mpage <- lookupGetParam "page"
-  let pageNumber = getCurrentPage mpage
-
-  let pagerOpt = [ LimitTo resultsPerPage
-                 , OffsetBy $ (pageNumber - 1) * resultsPerPage
-                 ]
-  return $ selectOpt `mappend` pagerOpt
+         -> [ SelectOpt val ]
+addPager mpage resultsPerPage selectOpt =
+  selectOpt ++ pagerOpt
+  where pageNumber = getCurrentPage mpage
+        pagerOpt = [ LimitTo resultsPerPage
+                   , OffsetBy $ (pageNumber - 1) * resultsPerPage
+                   ]
 
 
 -- @todo: Generalize not to be only for Event
