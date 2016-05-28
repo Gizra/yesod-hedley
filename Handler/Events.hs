@@ -94,9 +94,8 @@ getEventsR = do
     morder <- lookupGetParam "order"
 
     let selectOpt = case (addPager mpage 2) <$> addOrder morder [] of
-                      Right val -> val
-                      -- @todo: Throw exception
-                      Left val  -> error $ T.unpack val
+                        Right val -> val
+                        Left val  -> error $ T.unpack val
 
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
