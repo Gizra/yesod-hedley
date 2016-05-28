@@ -21,10 +21,10 @@ addPager mpage resultsPerPage selectOpt =
     case getCurrentPage mpage of
         Left val -> Left val
         Right pageNumber ->
-            let pagerOpt = [ LimitTo resultsPerPage
-                           , OffsetBy $ (pageNumber - 1) * resultsPerPage
-                           ]
-            in Right $ selectOpt ++ pagerOpt
+            Right $ selectOpt ++ pagerOpt
+            where pagerOpt = [ LimitTo resultsPerPage
+                             , OffsetBy $ (pageNumber - 1) * resultsPerPage
+                             ]
 
 addOrder :: Maybe Text
          -> [SelectOpt Event]
