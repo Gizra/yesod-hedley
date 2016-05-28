@@ -51,8 +51,9 @@ addFilter mfilter filters = do
 textToFilter :: Text -> Either Text (Filter Event)
 textToFilter text =
     case text of
+        "id"    -> Right $ EventId >. toSqlKey 3
         "title" -> Right $ EventTitle ==. "post 4"
-        "id" -> Right $ EventId >. toSqlKey 3
+        "user"  -> Right $ EventUserId >. toSqlKey 2
         _       -> Left $ T.pack "invalid filter"
 
 instance Monoid (Either Text [Filter Event]) where
@@ -125,7 +126,7 @@ getEventsR = do
     mpage   <- lookupGetParam "page"
     morder  <- lookupGetParam "order"
 
-    let selectOpt = case addPager mpage 2 >=> addOrder morder $ [] of
+    let selectOpt = case addPager mpage 3 >=> addOrder morder $ [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
