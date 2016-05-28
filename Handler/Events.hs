@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (splitOn)
+import qualified Data.Text           as T  (isPrefixOf, splitOn, tail)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -34,7 +34,7 @@ addOrder morder selectOpt = do
 
     where order = case morder of
             Nothing -> [ Desc EventId ]
-            Just vals -> orderText2SelectOpt $ T.splitOn "," vals
+            Just vals -> textToSelectOptList $ T.splitOn "," vals
 
 getTotalCount :: ( YesodPersist site
                  , YesodPersistBackend site ~ SqlBackend
@@ -58,14 +58,26 @@ addListMetaData urlRender totalCount keyValues =
             ]
 
 
+textToSelectOpt :: Text -> SelectOpt Event
+textToSelectOpt text =
+    case textWithNoPrefix of
+        "id"    -> direction text $ EventId
+        "title" -> direction text $ EventTitle
+        "user"  -> direction text $ EventUserId
+        _       -> error "Wrong order"
 
-orderText2SelectOpt :: [Text] -> [SelectOpt Event]
-orderText2SelectOpt []              = []
-orderText2SelectOpt ("id" : xs)     = [ Asc EventId] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt ("-id" : xs)    = [ Desc EventId] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
+    where textWithNoPrefix = if T.isPrefixOf "-" text
+                then T.tail text
+                else text
+          direction t = if T.isPrefixOf "-" t
+                    then Desc
+                    else Asc
+
+
+
+textToSelectOptList :: [Text] -> [SelectOpt Event]
+textToSelectOptList []       = []
+textToSelectOptList (x : xs) = [ textToSelectOpt x ] ++ (textToSelectOptList xs)
 
 getEventsR :: Handler Value
 getEventsR = do
