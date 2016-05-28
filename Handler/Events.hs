@@ -86,7 +86,9 @@ getEventsR = do
     selectOpt <- (addPager 2) >=> addOrder $ []
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
-    maybeEvents <- sequenceA [addMetaData eid event | Entity eid event <- events]
+    urlRender <- getUrlRender
+
+    let maybeEvents = sequenceA [addMetaData urlRender eid event | Entity eid event <- events]
 
     eventsWithMetaData <- addListMetaData ["data" .= maybeEvents]
     return $ object eventsWithMetaData
