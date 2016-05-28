@@ -58,33 +58,26 @@ addListMetaData urlRender totalCount keyValues =
             ]
 
 
+textToOrder :: Text -> SelectOpt Event
+textToOrder text =
+    case textWithNoPrefix of
+        "id"    -> direction text $ EventId
+        "title" -> direction text $ EventTitle
+        "user"  -> direction text $ EventUserId
+        _       -> error "Wrong order"
 
-text2Order :: Text -> [SelectOpt Event]
-text2Order text =
-  case lookup textWithNoPrefix keyVal of
-    Just val -> [direction val]
-    Nothing -> error "wrong order"
-  where
-    keyVal = [ ("title", EventTitle)
-             , ("user" , EventUserId)
-             , ("id"   , EventId)
-             ]
+    where textWithNoPrefix = if T.isPrefixOf "-" text
+                then T.tail text
+                else text
+          direction t = if T.isPrefixOf "-" t
+                    then Desc
+                    else Asc
 
-    textWithNoPrefix = if T.isPrefixOf "-" text
-              then T.tail text
-              else text
 
-    direction = if T.isPrefixOf "-" text
-              then Desc
-              else Asc
 
 orderText2SelectOpt :: [Text] -> [SelectOpt Event]
-orderText2SelectOpt []              = []
-orderText2SelectOpt ("id" : xs)     = [ Asc EventId] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt ("-id" : xs)    = [ Desc EventId] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt ("title" : xs)  = [ Asc EventTitle] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt ("-title" : xs) = [ Desc EventTitle] ++ (orderText2SelectOpt xs)
-orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
+orderText2SelectOpt []       = []
+orderText2SelectOpt (x : xs) = [ textToOrder x ] ++ (orderText2SelectOpt xs)
 
 getEventsR :: Handler Value
 getEventsR = do
