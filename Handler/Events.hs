@@ -43,7 +43,29 @@ addFilter :: Maybe Text
          -> [Filter Event]
          -> Either Text [ Filter Event ]
 addFilter mfilter filters = do
-    Right []
+    case mfilter of
+      Just vals -> textToFilterList $ T.splitOn "," vals
+      Nothing      -> Right []
+
+textToFilter :: Text -> Either Text (Filter Event)
+textToFilter text =
+    case text of
+        "id"    -> Right $ EventTitle ==. "Post"
+        _       -> Left $ T.pack "invalid filter"
+
+instance Monoid (Either Text [Filter Event]) where
+  mempty = Left mempty
+  mappend (Right a) (Right b) = Right $ a ++ b
+  mappend (Left a) (_) = Left a
+  mappend (_) (Left b) = Left b
+
+
+textToFilterList :: [Text] -> Either Text [Filter Event]
+textToFilterList []       = Right []
+textToFilterList (x : xs) = case textToFilter x of
+                                Right val -> (Right [ val ]) `mappend` (textToFilterList xs)
+                                Left val  -> Left val
+
 
 getTotalCount :: ( YesodPersist site
                  , YesodPersistBackend site ~ SqlBackend
