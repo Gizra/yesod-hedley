@@ -10,7 +10,7 @@ import           Import
 getCurrentPage :: Maybe Text -> Either Text Int
 getCurrentPage mpage =
     case (T.decimal $ fromMaybe "0" mpage) of
-        Left _ -> Left $ T.pack "Invalid pager ID"
+        Left _ -> Left $ T.pack "Invalid page ID"
         Right (val, _) -> Right val
 
 addPager :: Maybe Text
