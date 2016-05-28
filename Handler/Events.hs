@@ -93,7 +93,7 @@ getEventsR = do
     mpage <- lookupGetParam "page"
     morder <- lookupGetParam "order"
 
-    let selectOpt = case (addPager mpage 2) <*> addOrder morder [] of
+    let selectOpt = case addPager mpage 2 >=> addOrder morder $ [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
