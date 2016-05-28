@@ -24,12 +24,10 @@ addPager mpage resultsPerPage selectOpt =
                      , OffsetBy $ (pageNumber - 1) * resultsPerPage
                      ]
 
-
--- @todo: Generalize not to be only for Event
 addOrder :: Maybe Text
          -> [SelectOpt Event]
          -> Either Text [ SelectOpt Event ]
-addOrder morder selectOpt = do
+addOrder morder selectOpt =
     case order of
       Right val -> Right $ selectOpt ++ val
       Left val -> Left val
@@ -37,6 +35,15 @@ addOrder morder selectOpt = do
     where order = case morder of
             Nothing -> Right [ Desc EventId ]
             Just vals -> textToSelectOptList $ T.splitOn "," vals
+
+
+
+addFilters :: Maybe Text
+         -> [Filter Event]
+         -> Either Text [ Filter Event ]
+addFilters mfilter filters =
+    Right filters
+
 
 getTotalCount :: ( YesodPersist site
                  , YesodPersistBackend site ~ SqlBackend
@@ -90,19 +97,25 @@ textToSelectOptList (x : xs) = case textToSelectOpt x of
 
 getEventsR :: Handler Value
 getEventsR = do
-    mpage <- lookupGetParam "page"
-    morder <- lookupGetParam "order"
+    mfilter <- lookupGetParam "filter"
+    morder  <- lookupGetParam "order"
+    mpage   <- lookupGetParam "page"
 
     let selectOpt = case (addPager mpage 2) <$> addOrder morder [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
-    events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
+
+    let filters = case addFilters mfilter [] of
+                      Right val -> val
+                      Left val  -> error $ T.unpack val
+
+    events <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
 
     urlRender <- getUrlRender
     let maybeEvents = [addMetaData urlRender eid event | Entity eid event <- events]
 
-    totalCount <- getTotalCount []
+    totalCount <- getTotalCount filters
 
     let eventsWithMetaData = addListMetaData urlRender totalCount ["data" .= maybeEvents]
     return $ object eventsWithMetaData
