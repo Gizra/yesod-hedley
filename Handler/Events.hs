@@ -34,7 +34,7 @@ addOrder morder selectOpt = do
 
     where order = case morder of
             Nothing -> [ Desc EventId ]
-            Just vals -> orderText2SelectOpt $ T.splitOn "," vals
+            Just vals -> textToSelectOptList $ T.splitOn "," vals
 
 getTotalCount :: ( YesodPersist site
                  , YesodPersistBackend site ~ SqlBackend
@@ -58,8 +58,8 @@ addListMetaData urlRender totalCount keyValues =
             ]
 
 
-textToOrder :: Text -> SelectOpt Event
-textToOrder text =
+textToSelectOpt :: Text -> SelectOpt Event
+textToSelectOpt text =
     case textWithNoPrefix of
         "id"    -> direction text $ EventId
         "title" -> direction text $ EventTitle
@@ -75,9 +75,9 @@ textToOrder text =
 
 
 
-orderText2SelectOpt :: [Text] -> [SelectOpt Event]
-orderText2SelectOpt []       = []
-orderText2SelectOpt (x : xs) = [ textToOrder x ] ++ (orderText2SelectOpt xs)
+textToSelectOptList :: [Text] -> [SelectOpt Event]
+textToSelectOptList []       = []
+textToSelectOptList (x : xs) = [ textToSelectOpt x ] ++ (textToSelectOptList xs)
 
 getEventsR :: Handler Value
 getEventsR = do
