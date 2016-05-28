@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (isPrefixOf, splitOn, tail)
+import qualified Data.Text           as T  (append, isPrefixOf, pack, splitOn, tail, unpack)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -66,7 +66,7 @@ textToSelectOpt text =
         "id"    -> Right . direction text $ EventId
         "title" -> Right . direction text $ EventTitle
         "user"  -> Right . direction text $ EventUserId
-        _       -> Left "Wrong order"
+        _       -> Left $ T.append textWithNoPrefix (T.pack " is an invalid order")
 
     where textWithNoPrefix = if T.isPrefixOf "-" text
                 then T.tail text
@@ -96,7 +96,7 @@ getEventsR = do
     let selectOpt = case (addPager mpage 2) <$> addOrder morder [] of
                       Right val -> val
                       -- @todo: Throw exception
-                      Left val  -> []
+                      Left val  -> error $ T.unpack val
 
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
