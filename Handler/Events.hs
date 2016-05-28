@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (isPrefixOf, splitOn, tail)
+import qualified Data.Text           as T  (append, isPrefixOf, pack, splitOn, tail, unpack)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
@@ -28,12 +28,14 @@ addPager mpage resultsPerPage selectOpt =
 -- @todo: Generalize not to be only for Event
 addOrder :: Maybe Text
          -> [SelectOpt Event]
-         -> [ SelectOpt Event ]
+         -> Either Text [ SelectOpt Event ]
 addOrder morder selectOpt = do
-    selectOpt ++ order
+    case order of
+      Right val -> Right $ selectOpt ++ val
+      Left val -> Left val
 
     where order = case morder of
-            Nothing -> [ Desc EventId ]
+            Nothing -> Right [ Desc EventId ]
             Just vals -> textToSelectOptList $ T.splitOn "," vals
 
 getTotalCount :: ( YesodPersist site
@@ -58,13 +60,13 @@ addListMetaData urlRender totalCount keyValues =
             ]
 
 
-textToSelectOpt :: Text -> SelectOpt Event
+textToSelectOpt :: Text -> Either Text (SelectOpt Event)
 textToSelectOpt text =
     case textWithNoPrefix of
-        "id"    -> direction text $ EventId
-        "title" -> direction text $ EventTitle
-        "user"  -> direction text $ EventUserId
-        _       -> error "Wrong order"
+        "id"    -> Right . direction text $ EventId
+        "title" -> Right . direction text $ EventTitle
+        "user"  -> Right . direction text $ EventUserId
+        _       -> Left $ T.append textWithNoPrefix (T.pack " is an invalid order")
 
     where textWithNoPrefix = if T.isPrefixOf "-" text
                 then T.tail text
@@ -73,18 +75,27 @@ textToSelectOpt text =
                     then Desc
                     else Asc
 
+instance Monoid (Either Text [SelectOpt Event]) where
+  mempty = Left mempty
+  mappend (Right a) (Right b) = Right $ a ++ b
+  mappend (Left a) (_) = Left a
+  mappend (_) (Left b) = Left b
 
 
-textToSelectOptList :: [Text] -> [SelectOpt Event]
-textToSelectOptList []       = []
-textToSelectOptList (x : xs) = [ textToSelectOpt x ] ++ (textToSelectOptList xs)
+textToSelectOptList :: [Text] -> Either Text [SelectOpt Event]
+textToSelectOptList []       = Right []
+textToSelectOptList (x : xs) = case textToSelectOpt x of
+                                   Right val -> (Right [ val ]) `mappend` (textToSelectOptList xs)
+                                   Left val  -> Left val
 
 getEventsR :: Handler Value
 getEventsR = do
     mpage <- lookupGetParam "page"
     morder <- lookupGetParam "order"
 
-    let selectOpt = (addPager mpage 2) . (addOrder morder) $ []
+    let selectOpt = case (addPager mpage 2) <$> addOrder morder [] of
+                        Right val -> val
+                        Left val  -> error $ T.unpack val
 
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
