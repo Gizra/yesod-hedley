@@ -3,6 +3,7 @@ module Handler.Events where
 import           Data.Aeson
 import qualified Data.Text           as T  (append, isPrefixOf, pack, splitOn, tail, unpack)
 import qualified Data.Text.Read      as T  (decimal)
+import           Database.Persist.Sql      (toSqlKey)
 import           Handler.Event
 import           Import
 
@@ -50,7 +51,8 @@ addFilter mfilter filters = do
 textToFilter :: Text -> Either Text (Filter Event)
 textToFilter text =
     case text of
-        "id"    -> Right $ EventTitle ==. "Post"
+        "title" -> Right $ EventTitle ==. "post 4"
+        "id" -> Right $ EventId >. toSqlKey 3
         _       -> Left $ T.pack "invalid filter"
 
 instance Monoid (Either Text [Filter Event]) where
