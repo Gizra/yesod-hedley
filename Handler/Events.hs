@@ -88,7 +88,7 @@ getEventsR = do
 
     urlRender <- getUrlRender
 
-    let maybeEvents = sequenceA [addMetaData urlRender eid event | Entity eid event <- events]
+    let maybeEvents = [addMetaData urlRender eid event | Entity eid event <- events]
 
     eventsWithMetaData <- addListMetaData ["data" .= maybeEvents]
     return $ object eventsWithMetaData
