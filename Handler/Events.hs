@@ -18,27 +18,23 @@ addPager :: Maybe Text
          -> [ SelectOpt val ]
          -> [ SelectOpt val ]
 addPager mpage resultsPerPage selectOpt =
-  selectOpt ++ pagerOpt
-  where pageNumber = getCurrentPage mpage
-        pagerOpt = [ LimitTo resultsPerPage
-                   , OffsetBy $ (pageNumber - 1) * resultsPerPage
-                   ]
+    selectOpt ++ pagerOpt
+    where pageNumber = getCurrentPage mpage
+          pagerOpt = [ LimitTo resultsPerPage
+                     , OffsetBy $ (pageNumber - 1) * resultsPerPage
+                     ]
 
 
 -- @todo: Generalize not to be only for Event
-addOrder :: ( PersistQuery (YesodPersistBackend m)
-            , Yesod m
-            )
-         => [SelectOpt Event]
-         -> HandlerT m IO [ SelectOpt Event ]
-addOrder selectOpt = do
-  morder <- lookupGetParam "order"
+addOrder :: Maybe Text
+         -> [SelectOpt Event]
+         -> [ SelectOpt Event ]
+addOrder morder selectOpt = do
+    selectOpt ++ order
 
-  let order = case morder of
-                  Nothing -> [ Desc EventId ]
-                  Just vals -> orderText2SelectOpt $ T.splitOn "," vals
-
-  return $ selectOpt `mappend` order
+    where order = case morder of
+            Nothing -> [ Desc EventId ]
+            Just vals -> orderText2SelectOpt $ T.splitOn "," vals
 
 getTotalCount :: ( YesodPersist site
                  , YesodPersistBackend site ~ SqlBackend
@@ -73,7 +69,11 @@ orderText2SelectOpt (_ : xs)        = [] ++ (orderText2SelectOpt xs)
 
 getEventsR :: Handler Value
 getEventsR = do
-    selectOpt <- (addPager 2) >=> addOrder $ []
+    mpage <- lookupGetParam "page"
+    morder <- lookupGetParam "order"
+
+    -- selectOpt <- (addPager mpage 2) >=> addOrder $ []
+    let selectOpt = (addPager mpage 2) . (addOrder morder) $ []
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
     urlRender <- getUrlRender
