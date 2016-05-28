@@ -7,16 +7,11 @@ import           Handler.Event
 import           Import
 
 
-getCurrentPage :: ( PersistQuery (YesodPersistBackend m)
-                  , Yesod m
-                  )
-               => HandlerT m IO Int
-getCurrentPage = do
-  mpage <- lookupGetParam "page"
-  let pageNumber = case (T.decimal $ fromMaybe "0" mpage) of
-                      Left _ -> 0
-                      Right (val, _) -> val
-  return pageNumber
+getCurrentPage :: Maybe Text -> Int
+getCurrentPage mpage =
+    case (T.decimal $ fromMaybe "0" mpage) of
+        Left _ -> 0
+        Right (val, _) -> val
 
 addPager :: ( PersistEntity val
             , PersistEntityBackend val ~ YesodPersistBackend m
@@ -27,7 +22,8 @@ addPager :: ( PersistEntity val
          -> [ SelectOpt val ]
          -> HandlerT m IO [ SelectOpt val ]
 addPager resultsPerPage selectOpt  = do
-  pageNumber <- getCurrentPage
+  mpage <- lookupGetParam "page"
+  let pageNumber = getCurrentPage mpage
 
   let pagerOpt = [ LimitTo resultsPerPage
                  , OffsetBy $ (pageNumber - 1) * resultsPerPage
