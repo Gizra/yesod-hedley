@@ -76,10 +76,10 @@ textToSelectOpt text =
                     else Asc
 
 instance Monoid (Either Text [SelectOpt Event]) where
-  mempty = Left ""
+  mempty = Left mempty
   mappend (Right a) (Right b) = Right $ a ++ b
-  mappend (Left a) (Right _) = Left a
-  mappend (Left a) (Left b) = Left a
+  mappend (Left a) (_) = Left a
+  mappend (_) (Left b) = Left b
 
 
 textToSelectOptList :: [Text] -> Either Text [SelectOpt Event]
