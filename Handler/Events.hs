@@ -75,20 +75,26 @@ textToSelectOpt text =
                     then Desc
                     else Asc
 
+instance Monoid (Either Text [SelectOpt Event]) where
+  mempty = Left ""
+  mappend (Right a) (Right b) = Right $ a ++ b
+  mappend (Left a) (Right _) = Left a
+  mappend (Left a) (Left b) = Left a
 
 
 textToSelectOptList :: [Text] -> Either Text [SelectOpt Event]
 textToSelectOptList []       = Right []
 textToSelectOptList (x : xs) = case textToSelectOpt x of
-                                   Right val -> [ val ] ++ (textToSelectOptList xs)
-                                   Left val -> Left val
+                                   Right val -> (Right [ val ]) `mappend` (textToSelectOptList xs)
+                                   Left val  -> Left val
 
 getEventsR :: Handler Value
 getEventsR = do
     mpage <- lookupGetParam "page"
     morder <- lookupGetParam "order"
 
-    let selectOpt = (addPager mpage 2) . (addOrder morder) $ []
+    -- let selectOpt = (addPager mpage 2) . (addOrder morder) $ []
+    let selectOpt = (addPager mpage 2) $ []
 
     events <- runDB $ selectList [] selectOpt :: Handler [Entity Event]
 
