@@ -1,7 +1,7 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T
+import qualified Data.Text           as T  (isPrefixOf, splitOn, tail)
 import qualified Data.Text.Read      as T  (decimal)
 import           Handler.Event
 import           Import
