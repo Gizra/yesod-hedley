@@ -57,7 +57,7 @@ addFilter (("id", key) : xs) filters    = filterId key EventId "id" (addFilter x
 addFilter (("title", key) : xs) filters = filterText key EventTitle "title" (addFilter xs filters)
 addFilter (("user", key) : xs) filters  = filterId key EventUserId "user" (addFilter xs filters)
 
-addFilter _ _                           = Left $ T.pack "invalid filter"
+addFilter ((val, _) : xs) _             = Left . T.append val $ T.pack " is an invalid filter key"
 
 
 filterId :: ( PersistField (Key record),
@@ -144,19 +144,18 @@ getEventsR = do
     mfilter <- lookupGetParam "filter"
     mpage   <- lookupGetParam "page"
     morder  <- lookupGetParam "order"
+    params <- reqGetParams <$> getRequest
 
     let selectOpt = case addPager mpage 3 >=> addOrder morder $ [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
-    params <- reqGetParams <$> getRequest
+
 
     let filterParams = mapMaybe (\(queryParam, filterValue) -> case AT.maybeResult $ AT.parse filterParser queryParam of
                     Nothing -> Nothing
                     Just filterKey -> Just (filterKey, filterValue)
                   ) params
-
-    liftIO . print $ show filterParams
 
     let filters = case addFilter filterParams [] of
                         Right val -> val
