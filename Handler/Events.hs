@@ -58,11 +58,11 @@ getFilterParams (queryParam, filterValue) =
 addFilter :: [ (Text, Text) ]
           -> [Filter Event]
           -> Either Text [ Filter Event ]
-addFilter [] filters                    = Right filters
-addFilter (("id", key) : xs) filters    = filterId           key EventId     "id"    (addFilter xs filters)
+addFilter []                    filters = Right filters
+addFilter (("id"   , key) : xs) filters = filterId           key EventId     "id"    (addFilter xs filters)
 addFilter (("title", key) : xs) filters = filterTextRequired key EventTitle  "title" (addFilter xs filters)
-addFilter (("user", key) : xs) filters  = filterId           key EventUserId "user"  (addFilter xs filters)
-addFilter ((val, _) : _) _              = Left . T.append val $ T.pack " is an invalid filter key"
+addFilter (("user" , key) : xs) filters = filterId           key EventUserId "user"  (addFilter xs filters)
+addFilter ((val    , _)   : _)  _       = Left . T.append val $ T.pack " is an invalid filter key"
 
 
 filterId :: ( PersistField (Key record),
