@@ -53,7 +53,10 @@ addFilter :: [ (Text, Text) ]
          -> [Filter Event]
          -> Either Text [ Filter Event ]
 addFilter [] filters       = Right filters
-addFilter (("id", key) : xs) filters = Right  [ EventId >. toSqlKey 3 ] `mappend` (addFilter xs filters)
+addFilter (("id", key) : xs) filters = case T.decimal key of
+                                  Right (val, _) -> Right [ EventId >. toSqlKey val ] `mappend` (addFilter xs filters)
+                                  Left _ -> Left . T.append key $ T.pack " is an invalid value for the \"id\" filter"
+
 addFilter _ _              = Left $ T.pack "invalid filter"
 
 
