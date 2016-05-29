@@ -48,6 +48,12 @@ filterParser = do
     _ <- AT.string "]"
     return filterKey
 
+getFilterParams :: (Text, Text)
+                -> Maybe (Text, Text)
+getFilterParams (queryParam, filterValue) =
+    case AT.maybeResult $ AT.parse filterParser queryParam of
+      Just filterKey -> Just (filterKey, filterValue)
+      Nothing -> Nothing
 
 addFilter :: [ (Text, Text) ]
           -> [Filter Event]
@@ -56,7 +62,7 @@ addFilter [] filters                    = Right filters
 addFilter (("id", key) : xs) filters    = filterId   key EventId     "id"    (addFilter xs filters)
 addFilter (("title", key) : xs) filters = filterText key EventTitle  "title" (addFilter xs filters)
 addFilter (("user", key) : xs) filters  = filterId   key EventUserId "user"  (addFilter xs filters)
-addFilter ((val, _) : xs) _             = Left . T.append val $ T.pack " is an invalid filter key"
+addFilter ((val, _) : _) _              = Left . T.append val $ T.pack " is an invalid filter key"
 
 
 filterId :: ( PersistField (Key record),
@@ -140,7 +146,6 @@ textToSelectOptList (x : xs) = case textToSelectOpt x of
 
 getEventsR :: Handler Value
 getEventsR = do
-    mfilter <- lookupGetParam "filter"
     mpage   <- lookupGetParam "page"
     morder  <- lookupGetParam "order"
     params <- reqGetParams <$> getRequest
@@ -149,12 +154,7 @@ getEventsR = do
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
-
-
-    let filterParams = mapMaybe (\(queryParam, filterValue) -> case AT.maybeResult $ AT.parse filterParser queryParam of
-                    Nothing -> Nothing
-                    Just filterKey -> Just (filterKey, filterValue)
-                  ) params
+    let filterParams = mapMaybe getFilterParams params
 
     let filters = case addFilter filterParams [] of
                         Right val -> val
