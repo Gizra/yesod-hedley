@@ -52,9 +52,10 @@ filterParser = do
 addFilter :: [ (Text, Text) ]
          -> [Filter Event]
          -> Either Text [ Filter Event ]
-addFilter [] filters                 = Right filters
-addFilter (("id", key) : xs) filters = filterId key EventId "id" (addFilter xs filters)
-addFilter _ _                        = Left $ T.pack "invalid filter"
+addFilter [] filters                   = Right filters
+addFilter (("id", key) : xs) filters   = filterId key EventId "id" (addFilter xs filters)
+addFilter (("user", key) : xs) filters = filterId key EventUserId "user" (addFilter xs filters)
+addFilter _ _                          = Left $ T.pack "invalid filter"
 
 
 filterId :: ( PersistField (Key record),
