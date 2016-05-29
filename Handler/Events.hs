@@ -146,8 +146,8 @@ textToSelectOptList (x : xs) = case textToSelectOpt x of
 
 getEventsR :: Handler Value
 getEventsR = do
-    mpage   <- lookupGetParam "page"
-    morder  <- lookupGetParam "order"
+    mpage  <- lookupGetParam "page"
+    morder <- lookupGetParam "order"
     params <- reqGetParams <$> getRequest
 
     let selectOpt = case addPager mpage 3 >=> addOrder morder $ [] of
