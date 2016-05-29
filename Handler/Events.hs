@@ -50,13 +50,12 @@ filterParser = do
 
 
 addFilter :: [ (Text, Text) ]
-         -> [Filter Event]
-         -> Either Text [ Filter Event ]
+          -> [Filter Event]
+          -> Either Text [ Filter Event ]
 addFilter [] filters                    = Right filters
-addFilter (("id", key) : xs) filters    = filterId key EventId "id" (addFilter xs filters)
-addFilter (("title", key) : xs) filters = filterText key EventTitle "title" (addFilter xs filters)
-addFilter (("user", key) : xs) filters  = filterId key EventUserId "user" (addFilter xs filters)
-
+addFilter (("id", key) : xs) filters    = filterId   key EventId     "id"    (addFilter xs filters)
+addFilter (("title", key) : xs) filters = filterText key EventTitle  "title" (addFilter xs filters)
+addFilter (("user", key) : xs) filters  = filterId   key EventUserId "user"  (addFilter xs filters)
 addFilter ((val, _) : xs) _             = Left . T.append val $ T.pack " is an invalid filter key"
 
 
@@ -71,7 +70,7 @@ filterId :: ( PersistField (Key record),
 filterId key filterType name rest =
     case T.decimal key of
         Right (val, _) -> Right [ filterType ==. toSqlKey val ] `mappend` rest
-        Left _ -> Left . T.append key $ T.pack " is an invalid value for the " ++ name ++ " filter"
+        Left _         -> Left . T.append key $ T.pack " is an invalid value for the " ++ name ++ " filter"
 
 
 filterText :: Text
