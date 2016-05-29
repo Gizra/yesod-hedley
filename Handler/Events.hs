@@ -84,10 +84,8 @@ filterTextRequired :: Text
            -> Text
            -> Either Text [Filter Event]
            -> Either Text [Filter Event]
-filterTextRequired key filterType name rest =
-    case key of
-      "" -> Left . T.append name $ T.pack " filter, when used cannot be empty, as the field is required"
-      _ -> Right [ filterType ==. key ] `mappend` rest
+filterTextRequired "" filterType name rest  = Left . T.append name $ T.pack " filter, when used cannot be empty, as the field is required"
+filterTextRequired key filterType name rest = Right [ filterType ==. key ] `mappend` rest
 
 instance Monoid (Either Text [Filter Event]) where
   mempty = Left mempty
