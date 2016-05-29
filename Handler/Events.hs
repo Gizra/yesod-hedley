@@ -1,9 +1,10 @@
 module Handler.Events where
 
 import           Data.Aeson
-import qualified Data.Text           as T  (append, isPrefixOf, pack, splitOn, tail, unpack)
-import qualified Data.Text.Read      as T  (decimal)
-import           Database.Persist.Sql      (toSqlKey)
+import           Data.Attoparsec.Text as AT  (maybeResult, parse, string, takeTill, Parser)
+import qualified Data.Text            as T   (append, isPrefixOf, pack, splitOn, tail, unpack)
+import qualified Data.Text.Read       as T   (decimal)
+import           Database.Persist.Sql        (toSqlKey)
 import           Handler.Event
 import           Import
 
@@ -38,6 +39,14 @@ addOrder morder selectOpt = do
     where order = case morder of
             Nothing -> Right [ Desc EventId ]
             Just vals -> textToSelectOptList $ T.splitOn "," vals
+
+
+filterParser :: AT.Parser Text
+filterParser = do
+    _ <- AT.string "filter["
+    filterKey <- AT.takeTill (== ']')
+    _ <- AT.string "]"
+    return filterKey
 
 
 addFilter :: Maybe Text
@@ -129,6 +138,14 @@ getEventsR = do
     let selectOpt = case addPager mpage 3 >=> addOrder morder $ [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
+
+    params <- reqGetParams <$> getRequest
+
+    let filterParams = mapMaybe (\(queryParam, filterValue) -> case AT.maybeResult $ AT.parse filterParser queryParam of     -- (2) (4)
+                    Nothing -> Nothing
+                    Just filterKey -> Just (filterKey, filterValue)
+                  ) params
+    -- liftIO $ print . "Params are " ++ show filterParams
 
     let filters = case addFilter mfilter [] of
                         Right val -> val
