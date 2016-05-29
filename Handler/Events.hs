@@ -2,7 +2,7 @@ module Handler.Events where
 
 import           Data.Aeson
 import           Data.Attoparsec.Text as AT  (maybeResult, parse, string, takeTill, Parser)
-import qualified Data.Text            as T   (append, isPrefixOf, pack, splitOn, tail, unpack)
+import qualified Data.Text            as T   (append, empty, isPrefixOf, pack, splitOn, tail, unpack)
 import qualified Data.Text.Read       as T   (decimal)
 import           Database.Persist.Sql        (toSqlKey)
 import           Handler.Event
@@ -59,9 +59,9 @@ addFilter :: [ (Text, Text) ]
           -> [Filter Event]
           -> Either Text [ Filter Event ]
 addFilter [] filters                    = Right filters
-addFilter (("id", key) : xs) filters    = filterId   key EventId     "id"    (addFilter xs filters)
-addFilter (("title", key) : xs) filters = filterText key EventTitle  "title" (addFilter xs filters)
-addFilter (("user", key) : xs) filters  = filterId   key EventUserId "user"  (addFilter xs filters)
+addFilter (("id", key) : xs) filters    = filterId           key EventId     "id"    (addFilter xs filters)
+addFilter (("title", key) : xs) filters = filterTextRequired key EventTitle  "title" (addFilter xs filters)
+addFilter (("user", key) : xs) filters  = filterId           key EventUserId "user"  (addFilter xs filters)
 addFilter ((val, _) : _) _              = Left . T.append val $ T.pack " is an invalid filter key"
 
 
@@ -79,13 +79,15 @@ filterId key filterType name rest =
         Left _         -> Left . T.append key $ T.pack " is an invalid value for the " ++ name ++ " filter"
 
 
-filterText :: Text
+filterTextRequired :: Text
            -> EntityField Event Text
            -> Text
            -> Either Text [Filter Event]
            -> Either Text [Filter Event]
-filterText key filterType name rest =
-    Right [ filterType ==. key ] `mappend` rest
+filterTextRequired key filterType name rest =
+    case key of
+      "" -> Left . T.append name $ T.pack " filter, when used cannot be empty, as the field is required"
+      _ -> Right [ filterType ==. key ] `mappend` rest
 
 instance Monoid (Either Text [Filter Event]) where
   mempty = Left mempty
