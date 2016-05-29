@@ -52,8 +52,8 @@ getFilterParams :: (Text, Text)
                 -> Maybe (Text, Text)
 getFilterParams (queryParam, filterValue) =
     case AT.maybeResult $ AT.parse filterParser queryParam of
-      Just filterKey -> Just (filterKey, filterValue)
-      Nothing -> Nothing
+        Just filterKey -> Just (filterKey, filterValue)
+        Nothing -> Nothing
 
 addFilter :: [ (Text, Text) ]
           -> [Filter Event]
