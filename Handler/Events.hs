@@ -65,8 +65,8 @@ addFilter (("user" , key) : xs) filters = filterId           key EventUserId "us
 addFilter ((val    , _)   : _)  _       = Left . T.append val $ T.pack " is an invalid filter key"
 
 
-filterId :: ( PersistField (Key record),
-            ToBackendKey SqlBackend record
+filterId :: ( PersistField (Key record)
+            , ToBackendKey SqlBackend record
             )
          => Text
          -> EntityField Event (Key record)
