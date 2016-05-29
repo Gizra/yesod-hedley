@@ -52,10 +52,12 @@ filterParser = do
 addFilter :: [ (Text, Text) ]
          -> [Filter Event]
          -> Either Text [ Filter Event ]
-addFilter [] filters                   = Right filters
-addFilter (("id", key) : xs) filters   = filterId key EventId "id" (addFilter xs filters)
-addFilter (("user", key) : xs) filters = filterId key EventUserId "user" (addFilter xs filters)
-addFilter _ _                          = Left $ T.pack "invalid filter"
+addFilter [] filters                    = Right filters
+addFilter (("id", key) : xs) filters    = filterId key EventId "id" (addFilter xs filters)
+addFilter (("title", key) : xs) filters = filterText key EventTitle "title" (addFilter xs filters)
+addFilter (("user", key) : xs) filters  = filterId key EventUserId "user" (addFilter xs filters)
+
+addFilter _ _                           = Left $ T.pack "invalid filter"
 
 
 filterId :: ( PersistField (Key record),
@@ -71,6 +73,14 @@ filterId key filterType name rest =
         Right (val, _) -> Right [ filterType ==. toSqlKey val ] `mappend` rest
         Left _ -> Left . T.append key $ T.pack " is an invalid value for the " ++ name ++ " filter"
 
+
+filterText :: Text
+           -> EntityField Event Text
+           -> Text
+           -> Either Text [Filter Event]
+           -> Either Text [Filter Event]
+filterText key filterType name rest =
+    Right [ filterType ==. key ] `mappend` rest
 
 instance Monoid (Either Text [Filter Event]) where
   mempty = Left mempty
