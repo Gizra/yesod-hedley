@@ -49,34 +49,21 @@ filterParser = do
     return filterKey
 
 
-addFilter :: Maybe Text
+addFilter :: [ (Text, Text) ]
          -> [Filter Event]
          -> Either Text [ Filter Event ]
-addFilter mfilter filters = do
-    case mfilter of
-      Just vals -> textToFilterList $ T.splitOn "," vals
-      Nothing      -> Right []
+addFilter [] filters       = Right filters
+addFilter (("id", key) : xs) filters = Right  [ EventId >. toSqlKey 3 ] `mappend` (addFilter xs filters)
+addFilter _ _              = Left $ T.pack "invalid filter"
 
-textToFilter :: Text -> Either Text (Filter Event)
-textToFilter text =
-    case text of
-        "id"    -> Right $ EventId >. toSqlKey 3
-        "title" -> Right $ EventTitle ==. "post 4"
-        "user"  -> Right $ EventUserId >. toSqlKey 2
-        _       -> Left $ T.pack "invalid filter"
+
+
 
 instance Monoid (Either Text [Filter Event]) where
   mempty = Left mempty
   mappend (Right a) (Right b) = Right $ a ++ b
   mappend (Left a) (_) = Left a
   mappend (_) (Left b) = Left b
-
-
-textToFilterList :: [Text] -> Either Text [Filter Event]
-textToFilterList []       = Right []
-textToFilterList (x : xs) = case textToFilter x of
-                                Right val -> (Right [ val ]) `mappend` (textToFilterList xs)
-                                Left val  -> Left val
 
 
 getTotalCount :: ( YesodPersist site
@@ -141,13 +128,14 @@ getEventsR = do
 
     params <- reqGetParams <$> getRequest
 
-    let filterParams = mapMaybe (\(queryParam, filterValue) -> case AT.maybeResult $ AT.parse filterParser queryParam of     -- (2) (4)
+    let filterParams = mapMaybe (\(queryParam, filterValue) -> case AT.maybeResult $ AT.parse filterParser queryParam of
                     Nothing -> Nothing
                     Just filterKey -> Just (filterKey, filterValue)
                   ) params
-    -- liftIO $ print . "Params are " ++ show filterParams
 
-    let filters = case addFilter mfilter [] of
+    liftIO . print $ show filterParams
+
+    let filters = case addFilter filterParams [] of
                         Right val -> val
                         Left val  -> error $ T.unpack val
 
