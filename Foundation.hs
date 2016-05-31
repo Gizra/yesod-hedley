@@ -148,7 +148,6 @@ instance YesodAuth App where
     authenticate creds = runDB $ do
         x <- getBy $ UniqueUser $ credsIdent creds
         liftIO . print $ credsExtra creds
-        liftIO . print $ credsPlugin creds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
             Nothing -> Authenticated <$> insert User
