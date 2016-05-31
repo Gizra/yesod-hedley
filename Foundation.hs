@@ -147,14 +147,18 @@ instance YesodAuth App where
 
     authenticate creds = runDB $ do
         x <- getBy $ UniqueUser $ credsIdent creds
+        liftIO . print $ credsExtra creds
+        liftIO . print $ credsPlugin creds
         case x of
             Just (Entity uid _) -> return $ Authenticated uid
             Nothing -> Authenticated <$> insert User
-                { userIdent = credsIdent creds
-                , userEmail = ""
+                { userIdent = ident
+                , userEmail = email
                 , userPassword = Nothing
                 , userVerkey = Nothing
                 }
+                where ident = fromMaybe "" $ lookup "login" $ credsExtra creds
+                      email = fromMaybe "" $ lookup "email" $ credsExtra creds
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins m = [ oauth2Github
