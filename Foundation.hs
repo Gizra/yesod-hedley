@@ -5,6 +5,7 @@ import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.BrowserId (authBrowserId)
+import Yesod.Auth.OAuth2.Github
 import Yesod.Auth.Message   (AuthMessage (InvalidLogin))
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -127,6 +128,12 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
+githubClientId :: Text
+githubClientId = fmap pack $ getEnv "GITHUB_CLIENT_ID"
+
+githubClientSecret :: Text
+githubClientSecret = fmap pack $ getEnv "GITHUB_CLIENT_SECRET"
+
 instance YesodAuth App where
     type AuthId App = UserId
 
@@ -149,7 +156,9 @@ instance YesodAuth App where
                 }
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authBrowserId def]
+    authPlugins _ = [ authBrowserId def
+                    , oauth2Github clientId clientSecret
+                    ]
 
     authHttpManager = getHttpManager
 
