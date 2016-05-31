@@ -2,6 +2,7 @@ module Foundation where
 
 import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
+import System.Environment   (getEnv)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.BrowserId (authBrowserId)
@@ -23,7 +24,14 @@ data App = App
     , appConnPool    :: ConnectionPool -- ^ Database connection pool.
     , appHttpManager :: Manager
     , appLogger      :: Logger
+    , appGithubKeys   :: OAuthKeys
     }
+
+data OAuthKeys = OAuthKeys
+    { oauthKeysClientId :: Text
+    , oauthKeysClientSecret :: Text
+    }
+
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:
@@ -128,12 +136,6 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
-githubClientId :: Text
-githubClientId = fmap pack $ getEnv "GITHUB_CLIENT_ID"
-
-githubClientSecret :: Text
-githubClientSecret = fmap pack $ getEnv "GITHUB_CLIENT_SECRET"
-
 instance YesodAuth App where
     type AuthId App = UserId
 
@@ -156,8 +158,9 @@ instance YesodAuth App where
                 }
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [ authBrowserId def
-                    , oauth2Github clientId clientSecret
+    authPlugins m = [ oauth2Github
+                        (oauthKeysClientId $ appGithubKeys m)
+                        (oauthKeysClientSecret $ appGithubKeys m)
                     ]
 
     authHttpManager = getHttpManager

@@ -62,6 +62,9 @@ makeFoundation appSettings = do
         (if appMutableStatic appSettings then staticDevel else static)
         (appStaticDir appSettings)
 
+    -- Get GitHub oAuth
+    appGithubKeys <- loadOAuthKeysEnv "GITHUB"
+
     -- We need a log function to create a connection pool. We need a connection
     -- pool to create our foundation. And we need our foundation to get a
     -- logging function. To get out of this loop, we initially create a
@@ -86,6 +89,14 @@ makeFoundation appSettings = do
 
     -- Return the foundation
     return $ mkFoundation pool
+
+loadOAuthKeysEnv :: String -> IO OAuthKeys
+loadOAuthKeysEnv prefix = OAuthKeys
+    <$> (getEnvT $ prefix <> "_CLIENT_ID")
+    <*> (getEnvT $ prefix <> "_CLIENT_SECRET")
+
+  where
+    getEnvT = fmap T.pack . getEnv
 
 migrateData pool = do
     -- Migrate data only if "admin" is missing.
