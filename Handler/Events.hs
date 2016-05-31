@@ -160,11 +160,12 @@ getEventsR = do
     morder <- lookupGetParam "order"
     params <- reqGetParams <$> getRequest
 
+    -- Parse the params and get key/ value tuples of possibly existing filters.
     let filterParams = mapMaybe getFilterParams params
 
     filters <- returnValueOrThrowException $ addFilter filterParams []
 
-    selectOpt <- returnValueOrThrowException $ addPager mpage 3 >=> addOrder morder . []
+    selectOpt <- returnValueOrThrowException $ addPager mpage 3 >=> addOrder morder $ []
 
     events <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
 
