@@ -93,6 +93,7 @@ library
                  , yesod-table
                  , esqueleto
                  , yesod-paginator
+                 , attoparsec
 
 executable         yesod-hedley
     if flag(library-only)
