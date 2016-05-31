@@ -30,6 +30,8 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
 
+import System.Environment                   (getEnv)
+
 import State
 
 -- Import all relevant handler modules here.
@@ -96,7 +98,7 @@ loadOAuthKeysEnv prefix = OAuthKeys
     <*> (getEnvT $ prefix <> "_CLIENT_SECRET")
 
   where
-    getEnvT = fmap T.pack . getEnv
+    getEnvT = fmap pack . getEnv
 
 migrateData pool = do
     -- Migrate data only if "admin" is missing.
