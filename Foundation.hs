@@ -154,11 +154,10 @@ instance YesodAuth App where
                     Just (Entity uid _) -> return $ Authenticated uid
                     Nothing -> Authenticated <$> insert User
                         { userIdent = ident
-                        , userEmail = email
+                        , userEmail = fromMaybe "" $ lookup "email" $ credsExtra creds
                         , userPassword = Nothing
                         , userVerkey = Nothing
                         }
-                        where email = fromMaybe "" $ lookup "email" $ credsExtra creds
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins m = [ oauth2Github
