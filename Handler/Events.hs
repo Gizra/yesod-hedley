@@ -7,6 +7,7 @@ import qualified Data.Text.Read       as T   (decimal)
 import           Database.Persist.Sql        (toSqlKey)
 import           Handler.Event
 import           Import
+import           Yesod.Core.Types
 
 
 getCurrentPage :: Maybe Text -> Either Text Int
@@ -144,21 +145,26 @@ textToSelectOptList (x : xs) = case textToSelectOpt x of
                                    Right val -> (Right [ val ]) `mappend` (textToSelectOptList xs)
                                    Left val  -> Left val
 
+
+returnValueOrThrowException :: MonadIO m
+                            => Either Text a
+                            -> m a
+returnValueOrThrowException eitherResult =
+    case eitherResult of
+        Right val -> return val
+        Left val  -> liftIO . throwIO . HCError $ InvalidArgs [val]
+
 getEventsR :: Handler Value
 getEventsR = do
     mpage  <- lookupGetParam "page"
     morder <- lookupGetParam "order"
     params <- reqGetParams <$> getRequest
 
-    let selectOpt = case addPager mpage 3 >=> addOrder morder $ [] of
-                        Right val -> val
-                        Left val  -> error $ T.unpack val
-
     let filterParams = mapMaybe getFilterParams params
 
-    let filters = case addFilter filterParams [] of
-                        Right val -> val
-                        Left val  -> error $ T.unpack val
+    filters <- returnValueOrThrowException $ addFilter filterParams []
+
+    selectOpt <- returnValueOrThrowException $ addPager mpage 3 >=> addOrder morder . []
 
     events <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
 
