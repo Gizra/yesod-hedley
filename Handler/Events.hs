@@ -163,11 +163,10 @@ getEventsR = do
     -- Parse the params and get key/ value tuples of possibly existing filters.
     let filterParams = mapMaybe getFilterParams params
 
-    filters <- returnValueOrThrowException $ addFilter filterParams []
-
+    filters   <- returnValueOrThrowException $ addFilter filterParams                 []
     selectOpt <- returnValueOrThrowException $ addPager mpage 3 >=> addOrder morder $ []
 
-    events <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
+    events    <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
 
     urlRender <- getUrlRender
     let maybeEvents = [addMetaData urlRender eid event | Entity eid event <- events]
@@ -180,9 +179,8 @@ getEventsR = do
 
 postEventsR :: Handler Value
 postEventsR = do
-    event <- requireJsonBody :: Handler Event
-    eid <- runDB $ insert event
-
+    event     <- requireJsonBody :: Handler Event
+    eid       <- runDB $ insert event
     returnVal <- getEventR eid
 
     sendResponseStatus status201 returnVal
