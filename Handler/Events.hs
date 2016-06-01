@@ -2,7 +2,7 @@ module Handler.Events where
 
 import           Data.Aeson
 import           Data.Attoparsec.Text as AT  (maybeResult, parse, string, takeTill, Parser)
-import qualified Data.Text            as T   (append, empty, isPrefixOf, pack, splitOn, tail, unpack)
+import qualified Data.Text            as T   (append, isPrefixOf, pack, splitOn, tail)
 import qualified Data.Text.Read       as T   (decimal)
 import           Database.Persist.Sql        (toSqlKey)
 import           Handler.Event
@@ -32,7 +32,7 @@ addPager mpage resultsPerPage selectOpt =
 addOrder :: Maybe Text
          -> [SelectOpt Event]
          -> Either Text [ SelectOpt Event ]
-addOrder morder selectOpt = do
+addOrder morder selectOpt =
     case order of
       Right val -> Right $ selectOpt ++ val
       Left val -> Left val
@@ -85,8 +85,10 @@ filterTextRequired :: Text
            -> Text
            -> Either Text [Filter Event]
            -> Either Text [Filter Event]
-filterTextRequired ""  filterType name rest = Left . T.append name $ T.pack " filter, when used cannot be empty, as the field is required"
-filterTextRequired key filterType name rest = Right [ filterType ==. key ] `mappend` rest
+filterTextRequired ""  _ name _          = Left . T.append name $ T.pack " filter, when used cannot be empty, as the field is required"
+filterTextRequired key filterType _ rest = Right [ filterType ==. key ] `mappend` rest
+
+
 
 instance Monoid (Either Text [Filter Event]) where
   mempty = Left mempty

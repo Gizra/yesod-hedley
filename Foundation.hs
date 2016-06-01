@@ -4,9 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
-import Yesod.Auth.BrowserId (authBrowserId)
 import Yesod.Auth.OAuth2.Github
-import Yesod.Auth.Message   (AuthMessage (InvalidLogin))
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
 import qualified Yesod.Core.Unsafe as Unsafe
@@ -138,11 +136,11 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = runDB $ do
+    authenticate creds = runDB $
         case credsPlugin creds of
             "github" -> do
                 let ident = fromMaybe "" $ lookup "login" $ credsExtra creds
-                x <- getBy $ UniqueUser $ ident
+                x <- getBy . UniqueUser $ ident
                 case x of
                     Just (Entity uid _) -> return $ Authenticated uid
                     Nothing -> Authenticated <$> insert User
