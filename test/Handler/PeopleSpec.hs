@@ -3,9 +3,9 @@ module Handler.PeopleSpec (spec) where
 import TestImport
 
 spec :: Spec
-spec = withApp $ do
+spec = withApp .
 
-    describe "getPeopleR" $ do
+    describe "getPeopleR" .
         it "gives a 200" $ do
             get PeopleR
             statusIs 200

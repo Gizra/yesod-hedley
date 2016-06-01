@@ -3,9 +3,9 @@ module Handler.EventsSpec (spec) where
 import TestImport
 
 spec :: Spec
-spec = withApp $ do
+spec = withApp .
 
-    describe "get Events index" $ do
+    describe "get Events index" .
       it "get Events index" $ do
           get EventsR
           statusIs 200

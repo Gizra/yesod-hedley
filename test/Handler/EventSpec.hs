@@ -3,17 +3,16 @@ module Handler.EventSpec (spec) where
 import TestImport
 
 spec :: Spec
-spec = withApp $ do
-
-    describe "get single Event" $ do
+spec = withApp .
+    describe "get single Event" .
         it "get single event index" $ do
-            uid <- runDB $ insert $ User
+            uid <- runDB $ insert User
                 { userIdent = "foo"
                 , userEmail = "foo@example.com"
                 , userPassword = Nothing
                 , userVerkey = Nothing
                 }
-            eid <- runDB $ insert $ Event "title" "body" uid
+            eid <- runDB . insert $ Event "title" "body" uid
             get $ EventR eid
             statusIs 200
 

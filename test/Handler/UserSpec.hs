@@ -4,11 +4,10 @@ import TestImport
 import Database.Persist.Sql (toSqlKey)
 
 spec :: Spec
-spec = withApp $ do
-
-    describe "getUserR" $ do
+spec = withApp .
+    describe "getUserR" .
         it "gives a 200" $ do
-            uid <- runDB $ insert $ User
+            uid <- runDB $ insert User
                 { userIdent = "foo"
                 , userEmail = "foo@example.com"
                 , userPassword = Nothing

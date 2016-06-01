@@ -32,7 +32,7 @@ addPager mpage resultsPerPage selectOpt =
 addOrder :: Maybe Text
          -> [SelectOpt Event]
          -> Either Text [ SelectOpt Event ]
-addOrder morder selectOpt = do
+addOrder morder selectOpt =
     case order of
       Right val -> Right $ selectOpt ++ val
       Left val -> Left val
