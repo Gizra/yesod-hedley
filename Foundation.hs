@@ -23,14 +23,7 @@ data App = App
     , appConnPool    :: ConnectionPool -- ^ Database connection pool.
     , appHttpManager :: Manager
     , appLogger      :: Logger
-    , appGithubKeys   :: OAuthKeys
     }
-
-data OAuthKeys = OAuthKeys
-    { oauthKeysClientId :: Text
-    , oauthKeysClientSecret :: Text
-    }
-
 
 -- This is where we define all of the routes in our application. For a full
 -- explanation of the syntax, please see:

@@ -1,5 +1,2 @@
 database:
   database: yesod-hedley_test.sqlite3
-
-github-client-id:     "_env:GITHUB_CLIENT_ID:1234"
-github-client-secret: "_env:GITHUB_CLIENT_SECRET:SOME-SECRET"
