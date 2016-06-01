@@ -5,6 +5,7 @@ import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.BrowserId (authBrowserId)
+import Yesod.Auth.OAuth2.Github
 import Yesod.Auth.Message   (AuthMessage (InvalidLogin))
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -138,18 +139,25 @@ instance YesodAuth App where
     redirectToReferer _ = True
 
     authenticate creds = runDB $ do
-        x <- getBy $ UniqueUser $ credsIdent creds
-        case x of
-            Just (Entity uid _) -> return $ Authenticated uid
-            Nothing -> Authenticated <$> insert User
-                { userIdent = credsIdent creds
-                , userEmail = ""
-                , userPassword = Nothing
-                , userVerkey = Nothing
-                }
+        case credsPlugin creds of
+            "github" -> do
+                let ident = fromMaybe "" $ lookup "login" $ credsExtra creds
+                x <- getBy $ UniqueUser $ ident
+                case x of
+                    Just (Entity uid _) -> return $ Authenticated uid
+                    Nothing -> Authenticated <$> insert User
+                        { userIdent = ident
+                        , userEmail = fromMaybe "" $ lookup "email" $ credsExtra creds
+                        , userPassword = Nothing
+                        , userVerkey = Nothing
+                        }
 
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins _ = [authBrowserId def]
+    authPlugins app = [ oauth2Github
+                          (oauthKeysClientId     githubKeys)
+                          (oauthKeysClientSecret githubKeys)
+                      ]
+                      where githubKeys = appGithubKeys $ appSettings app
 
     authHttpManager = getHttpManager
 

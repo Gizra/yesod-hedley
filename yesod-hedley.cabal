@@ -94,6 +94,7 @@ library
                  , esqueleto
                  , yesod-paginator
                  , attoparsec
+                 , yesod-auth-oauth2
 
 executable         yesod-hedley
     if flag(library-only)

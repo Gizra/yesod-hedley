@@ -29,7 +29,6 @@ import Network.Wai.Middleware.RequestLogger (Destination (Logger),
                                              mkRequestLogger, outputFormat)
 import System.Log.FastLogger                (defaultBufSize, newStdoutLoggerSet,
                                              toLogStr)
-
 import State
 
 -- Import all relevant handler modules here.
