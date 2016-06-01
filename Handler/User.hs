@@ -3,7 +3,6 @@ module Handler.User where
 import           Import
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.))
-import           Database.Persist.Sql    (toSqlKey)
 
 getUserR :: UserId -> Handler Html
 getUserR userId = do
