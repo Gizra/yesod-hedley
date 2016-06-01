@@ -136,11 +136,11 @@ instance YesodAuth App where
     -- Override the above two destinations when a Referer: header is present
     redirectToReferer _ = True
 
-    authenticate creds = runDB $ do
+    authenticate creds = runDB $
         case credsPlugin creds of
             "github" -> do
                 let ident = fromMaybe "" $ lookup "login" $ credsExtra creds
-                x <- getBy $ UniqueUser $ ident
+                x <- getBy . UniqueUser $ ident
                 case x of
                     Just (Entity uid _) -> return $ Authenticated uid
                     Nothing -> Authenticated <$> insert User
