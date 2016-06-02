@@ -42,4 +42,11 @@ GroupMembership
     deriving Show
 
 
+Token
+    token Text
+    created UTCTime default=CURRENT_TIME
+    userId UserId
+    deriving Eq
+    deriving Show
+
  -- By default this file is used in Model.hs (which is imported by Foundation.hs)
