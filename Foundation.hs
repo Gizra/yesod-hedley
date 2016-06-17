@@ -143,19 +143,12 @@ instance YesodAuth App where
                 x <- getBy . UniqueUser $ ident
                 case x of
                     Just (Entity uid _) -> return $ Authenticated uid
-                    Nothing -> do
-                        uid <- insert User
+                    Nothing -> Authenticated <$> insert User
                             { userIdent = ident
                             , userEmail = fromMaybe "" . lookup "email" $ credsExtra creds
                             , userPassword = Nothing
                             , userVerkey = Nothing
                             }
-
-                        -- Add token
-                        currentTime <- liftIO getCurrentTime
-                        _ <- insert $ Token "someToken" currentTime uid
-
-                        return $ Authenticated uid
 
     -- You can add other plugins like BrowserID, email or OAuth here
     authPlugins app = [ oauth2Github
