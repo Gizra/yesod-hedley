@@ -159,6 +159,7 @@ instance YesodAuth App where
                         , userEmail = fromMaybe "" $ lookup "email" $ credsExtra creds
                         , userPassword = Nothing
                         , userVerkey = Nothing
+                        , userToken = ident ++ "-Token"
                         }
 
     getAuthId (Creds "token" t _) = do

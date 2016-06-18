@@ -129,9 +129,10 @@ migrateData pool = do
                 createUser name =
                     User
                         { userIdent = name
-                        , userEmail = name ++"@example.com"
+                        , userEmail = name ++ "@example.com"
                         , userPassword = Nothing
                         , userVerkey = Nothing
+                        , userToken = name ++ "-Token"
                         }
 
 -- | Convert our foundation to a WAI Application by calling @toWaiAppPlain@ and
