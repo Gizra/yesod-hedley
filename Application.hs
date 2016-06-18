@@ -116,6 +116,10 @@ migrateData pool = do
 
             currentTime <- getCurrentTime
 
+            -- AccessToken
+            _ <- runSqlPool (insert $ AccessToken currentTime userId1 "1234") pool
+            _ <- runSqlPool (insert $ AccessToken currentTime userId2 "5678") pool
+
             -- Group membership
             _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company1) pool
             _ <- runSqlPool (insert $ GroupMembership State.Active currentTime userId1 company2) pool

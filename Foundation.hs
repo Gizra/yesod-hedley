@@ -86,6 +86,11 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
+
+    -- RESTful routes
+    isAuthorized (EventR _) _ = hasValidAccessToken
+    isAuthorized EventsR _ = hasValidAccessToken
+
     -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
 
@@ -116,6 +121,15 @@ instance Yesod App where
             || level == LevelError
 
     makeLogger = return . appLogger
+
+
+hasValidAccessToken = do
+    mToken <- lookupGetParam "id"
+    return Authorized
+    -- return $ case mu of
+    --     Nothing -> AuthenticationRequired
+    --     Just "admin" -> Authorized
+    --     Just _ -> Unauthorized "You must be an admin"
 
 -- How to run database actions.
 instance YesodPersist App where
