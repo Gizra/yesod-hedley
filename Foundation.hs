@@ -4,6 +4,7 @@ import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
+import Yesod.Auth.Token
 import Yesod.Auth.OAuth2.Github
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -126,6 +127,16 @@ instance YesodPersist App where
 instance YesodPersistRunner App where
     getDBRunner = defaultGetDBRunner appConnPool
 
+instance YesodAuthToken App where
+    type AuthTokenId App = UserId
+
+    setUserToken uid t = do
+        runDB $ updateWhere [UserId ==. uid] [UserToken =. t]
+
+    getTokenCreds t = do
+        mUser <- runDB . getBy $ UniqueToken t
+        return $ (\uid -> TokenCreds (entityKey uid) t) <$> mUser
+
 instance YesodAuth App where
     type AuthId App = UserId
 
@@ -150,8 +161,13 @@ instance YesodAuth App where
                         , userVerkey = Nothing
                         }
 
+    getAuthId (Creds "token" t _) = do
+        mTokenCreds <- getTokenCreds t
+        return $ tokenCredsAuthId <$> mTokenCreds
+
     -- You can add other plugins like BrowserID, email or OAuth here
-    authPlugins app = [ oauth2Github
+    authPlugins app = [ authToken
+                      , oauth2Github
                           (oauthKeysClientId     githubKeys)
                           (oauthKeysClientSecret githubKeys)
                       ]

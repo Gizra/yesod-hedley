@@ -3,8 +3,10 @@ User
     email Email
     password Text Maybe
     verkey VerKey Maybe
+    token Text
     UniqueUser ident
     UniqueEmail email
+    UniqueToken token
     deriving Typeable
     deriving Show
 Comment json -- Adding "json" causes ToJSON and FromJSON instances to be derived.
