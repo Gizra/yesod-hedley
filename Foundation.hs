@@ -124,12 +124,14 @@ instance Yesod App where
 
 
 hasValidAccessToken = do
-    mToken <- lookupGetParam "id"
-    return Authorized
-    -- return $ case mu of
-    --     Nothing -> AuthenticationRequired
-    --     Just "admin" -> Authorized
-    --     Just _ -> Unauthorized "You must be an admin"
+    mToken <- lookupGetParam "access_token"
+    case mToken of
+      Nothing -> return $ Unauthorized "No access token in the query string"
+      Just token -> do
+        mUser <- runDB . getBy $ UniqueToken token
+        return $ case mUser of
+          Nothing -> Unauthorized "Wrong access token"
+          Just _ -> Authorized
 
 -- How to run database actions.
 instance YesodPersist App where
