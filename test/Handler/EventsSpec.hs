@@ -7,8 +7,13 @@ spec = withApp .
 
     describe "get Events index" .
       it "get Events index" $ do
-          get EventsR
-          statusIs 200
+        request $ do
+            setMethod "GET"
+            addGetParam "access_token" "1234"
+            setUrl EventsR
+
+
+        statusIs 200
 
 
     -- describe "postEventsR" $ do

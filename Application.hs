@@ -133,7 +133,7 @@ migrateData pool = do
                 createUser name =
                     User
                         { userIdent = name
-                        , userEmail = name ++"@example.com"
+                        , userEmail = name ++ "@example.com"
                         , userPassword = Nothing
                         , userVerkey = Nothing
                         }
