@@ -128,10 +128,10 @@ hasValidAccessToken = do
     case mToken of
       Nothing -> return $ Unauthorized "No access token in the query string"
       Just token -> do
-        mUser <- runDB . getBy $ UniqueToken token
-        return $ case mUser of
-          Nothing -> Unauthorized "Wrong access token"
-          Just _ -> Authorized
+        users <- runDB $ selectList [AccessTokenToken ==. token] [LimitTo 1]
+        return $ if (null users)
+          then Unauthorized "Wrong access token"
+          else Authorized
 
 -- How to run database actions.
 instance YesodPersist App where
