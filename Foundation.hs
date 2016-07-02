@@ -123,6 +123,7 @@ instance Yesod App where
     makeLogger = return . appLogger
 
 
+-- Validate the access token.
 hasValidAccessToken = do
     mToken <- lookupGetParam "access_token"
     case mToken of
