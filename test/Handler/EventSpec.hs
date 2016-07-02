@@ -15,14 +15,14 @@ spec = withApp .
 
             currentTime <- liftIO getCurrentTime
 
-            _ <- runDB . insert $ AccessToken currentTime userId "1234"
+            _ <- runDB . insert $ AccessToken currentTime userId "someRandomToken"
 
             eid <- runDB . insert $ Event "title" "body" userId
 
             request $ do
                 setMethod "GET"
                 setUrl $ EventR eid
-                addGetParam "access_token" "1234"
+                addGetParam "access_token" "someRandomToken"
             statusIs 200
 
 
