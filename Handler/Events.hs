@@ -106,15 +106,16 @@ getTotalCount filters =
   runDB $ count (filters :: [Filter Event])
 
 addListMetaData :: KeyValue t
-                => (Route App -> Text)
+                => (Route App -> [(Text, Text)] -> Text)
+                -> [(Text, Text)]
                 -> Int
                 -> [t]
                 -> [t]
-addListMetaData urlRender totalCount keyValues =
+addListMetaData urlRenderParams params totalCount keyValues =
     keyValues ++ metaData
 
     where metaData =
-            [ "self" .= urlRender EventsR
+            [ "self" .= urlRenderParams EventsR params
             , "count" .= totalCount
             ]
 
@@ -170,12 +171,12 @@ getEventsR = do
 
     events    <- runDB $ selectList filters selectOpt :: Handler [Entity Event]
 
-    urlRender <- getUrlRender
-    let maybeEvents = [addMetaData urlRender eid event | Entity eid event <- events]
+    urlRenderParams <- getUrlRenderParams
+    let maybeEvents = [addMetaData urlRenderParams params eid event | Entity eid event <- events]
 
     totalCount <- getTotalCount filters
 
-    let eventsWithMetaData = addListMetaData urlRender totalCount ["data" .= maybeEvents]
+    let eventsWithMetaData = addListMetaData urlRenderParams params totalCount ["data" .= maybeEvents]
     return $ object eventsWithMetaData
 
 

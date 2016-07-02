@@ -7,22 +7,26 @@ import qualified Data.HashMap.Strict  as HM (insert)
 import           Import
 
 
-addMetaData :: (Route App -> Text)
+
+-- @todo: Use [(ParamName, ParamValue)] instead of String from Yesod.Request
+addMetaData :: (Route App -> [(Text, Text)] -> Text)
+            -> [(Text, Text)]
             -> EventId
             -> Event
             -> Maybe (HashMap Text Value)
-addMetaData urlRender eid event =
+addMetaData urlRenderParams params eid event =
     case toJSON (Entity eid event) of
         Object obj -> Just $ HM.insert "self" self obj
         _          -> Nothing
 
-    where self = String . urlRender $ EventR eid
+    where self = String $ urlRenderParams (EventR eid) params
 
 getEventR :: EventId -> Handler Value
 getEventR eid = do
     event <- runDB $ get404 eid
-    urlRender <- getUrlRender
-    let eventWithMetaData = addMetaData urlRender eid event
+    urlRenderParams <- getUrlRenderParams
+    params <- reqGetParams <$> getRequest
+    let eventWithMetaData = addMetaData urlRenderParams params eid event
 
     return $ object ["data" .= eventWithMetaData]
 
