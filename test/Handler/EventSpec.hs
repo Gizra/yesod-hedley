@@ -6,14 +6,23 @@ spec :: Spec
 spec = withApp .
     describe "get single Event" .
         it "get single event index" $ do
-            uid <- runDB $ insert User
+            userId <- runDB $ insert User
                 { userIdent = "foo"
                 , userEmail = "foo@example.com"
                 , userPassword = Nothing
                 , userVerkey = Nothing
                 }
-            eid <- runDB . insert $ Event "title" "body" uid
-            get $ EventR eid
+
+            currentTime <- liftIO getCurrentTime
+
+            _ <- runDB . insert $ AccessToken currentTime userId "someRandomToken"
+
+            eid <- runDB . insert $ Event "title" "body" userId
+
+            request $ do
+                setMethod "GET"
+                setUrl $ EventR eid
+                addGetParam "access_token" "someRandomToken"
             statusIs 200
 
 

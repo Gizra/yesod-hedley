@@ -86,6 +86,11 @@ instance Yesod App where
     isAuthorized (AuthR _) _ = return Authorized
     isAuthorized FaviconR _ = return Authorized
     isAuthorized RobotsR _ = return Authorized
+
+    -- RESTful routes
+    isAuthorized (EventR _) _ = hasValidAccessToken
+    isAuthorized EventsR _ = hasValidAccessToken
+
     -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
 
@@ -116,6 +121,18 @@ instance Yesod App where
             || level == LevelError
 
     makeLogger = return . appLogger
+
+
+-- Validate the access token.
+hasValidAccessToken = do
+    mToken <- lookupGetParam "access_token"
+    case mToken of
+      Nothing -> return $ Unauthorized "No access token in the query string"
+      Just token -> do
+        users <- runDB $ selectList [AccessTokenToken ==. token] [LimitTo 1]
+        return $ if (null users)
+          then Unauthorized "Wrong access token"
+          else Authorized
 
 -- How to run database actions.
 instance YesodPersist App where
