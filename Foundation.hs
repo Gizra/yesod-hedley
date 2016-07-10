@@ -1,5 +1,6 @@
 module Foundation where
 
+import           Database.Persist.Sql       (toSqlKey)
 import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Text.Hamlet          (hamletFile)
@@ -175,6 +176,18 @@ instance YesodAuth App where
                       where githubKeys = appGithubKeys $ appSettings app
 
     authHttpManager = getHttpManager
+
+    maybeAuthId = do
+        mToken <- lookupGetParam "access_token"
+        case mToken of
+            Nothing -> return Nothing
+            Just token -> do
+                mUser <- runDB $ selectFirst [AccessTokenToken ==. token] []
+                case mUser of
+                    Nothing -> return Nothing
+                    Just user -> return $ Just $ fmap accessTokenUserId $ fmap entityVal user
+
+
 
 instance YesodAuthPersist App
 
