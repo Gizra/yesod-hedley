@@ -127,7 +127,7 @@ instance Yesod App where
 isAuthenticated = do
     mu <- maybeAuthId
     return $ case mu of
-        Nothing -> AuthenticationRequired
+        Nothing -> Unauthorized "You must login"
         Just _ -> Authorized
 
 -- How to run database actions.
