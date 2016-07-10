@@ -1,8 +1,7 @@
 module Foundation where
 
-import           Database.Persist.Sql       (toSqlKey)
 import Import.NoFoundation
-import Database.Persist.Sql (ConnectionPool, runSqlPool)
+import Database.Persist.Sql (ConnectionPool, runSqlPool, toSqlKey)
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.OAuth2.Github
