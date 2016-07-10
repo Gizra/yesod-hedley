@@ -185,9 +185,7 @@ instance YesodAuth App where
                 mUser <- runDB $ selectFirst [AccessTokenToken ==. token] []
                 case mUser of
                     Nothing -> return Nothing
-                    Just user -> return $ Just $ fmap accessTokenUserId $ fmap entityVal user
-
-
+                    Just user -> return $ Just . accessTokenUserId $ entityVal user
 
 instance YesodAuthPersist App
 
