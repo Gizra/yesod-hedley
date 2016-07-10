@@ -81,7 +81,7 @@ instance Yesod App where
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- The page to be redirected to when authentication is required.
-    authRoute _ = Just $ AuthR LoginR
+    authRoute _ = Nothing
 
     -- Routes not requiring authentication.
     isAuthorized (AuthR _) _ = return Authorized
@@ -89,8 +89,8 @@ instance Yesod App where
     isAuthorized RobotsR _ = return Authorized
 
     -- RESTful routes
-    isAuthorized (EventR _) _ = hasValidAccessToken
-    isAuthorized EventsR _ = hasValidAccessToken
+    isAuthorized (EventR _) _ = isAuthenticated
+    isAuthorized EventsR _ = isAuthenticated
 
     -- Default to Authorized for now.
     isAuthorized _ _ = return Authorized
@@ -124,16 +124,11 @@ instance Yesod App where
     makeLogger = return . appLogger
 
 
--- Validate the access token.
-hasValidAccessToken = do
-    mToken <- lookupGetParam "access_token"
-    case mToken of
-      Nothing -> return $ Unauthorized "No access token in the query string"
-      Just token -> do
-        users <- runDB $ selectList [AccessTokenToken ==. token] [LimitTo 1]
-        return $ if (null users)
-          then Unauthorized "Wrong access token"
-          else Authorized
+isAuthenticated = do
+    mu <- maybeAuthId
+    return $ case mu of
+        Nothing -> AuthenticationRequired
+        Just _ -> Authorized
 
 -- How to run database actions.
 instance YesodPersist App where
