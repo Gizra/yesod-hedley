@@ -173,13 +173,17 @@ instance YesodAuth App where
 
     maybeAuthId = do
         mToken <- lookupGetParam "access_token"
-        case mToken of
+        tokenAuth <- case mToken of
             Nothing -> return Nothing
             Just token -> do
                 mUser <- runDB $ selectFirst [AccessTokenToken ==. token] []
                 case mUser of
                     Nothing -> return Nothing
                     Just user -> return $ Just . accessTokenUserId $ entityVal user
+        defaultAuth <- defaultMaybeAuthId
+        return $ case catMaybes [defaultAuth, tokenAuth] of
+            [] -> Nothing
+            (x : _) -> Just x
 
 instance YesodAuthPersist App
 
