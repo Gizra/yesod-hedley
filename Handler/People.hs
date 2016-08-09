@@ -11,9 +11,7 @@ getPeopleR :: Handler Html
 getPeopleR = do
     (people, pagerWidget) <- runDB $ selectPaginated 2 [] [ Desc UserId ] :: Handler ([Entity User],  WidgetT App IO ())
 
-    let ppl = fmap entityVal people
     let table = Table.buildBootstrap peopleTable people
-
     defaultLayout $ do
         setTitle "People List"
         $(widgetFile "people")
