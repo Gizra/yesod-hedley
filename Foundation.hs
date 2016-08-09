@@ -192,7 +192,7 @@ instance YesodBreadcrumbs App where
   breadcrumb PeopleR = return ("People", Just HomeR)
   breadcrumb (UserR userId) = do
     user <- runDB $ get404 userId
-    return (userIdent user ++ "'s account", Just HomeR)
+    return (userIdent user ++ "'s account", Just PeopleR)
   breadcrumb  _ = return ("home", Nothing)
 
 
