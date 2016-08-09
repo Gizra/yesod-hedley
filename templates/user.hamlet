@@ -2,7 +2,7 @@
   #{userIdent user}
 
 
-$if not null companies
+$if null companies
   <div>
     You don't have any companies yet.
 
