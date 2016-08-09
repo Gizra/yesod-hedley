@@ -1,0 +1,11 @@
+$if null companies
+  <div>
+    No companies yet.
+
+$else
+  <.page-header><h2>Companies
+
+  <ul>
+    $forall (E.Value title, E.Value state) <- companies
+      <li>
+        #{title} (#{show state})

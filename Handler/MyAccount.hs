@@ -3,6 +3,7 @@ module Handler.MyAccount where
 import Import
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.))
+import Utils.Companies
 
 getMyAccountR :: Handler Html
 getMyAccountR = do
@@ -18,6 +19,8 @@ getMyAccountR = do
                     ( company ^. CompanyTitle
                     , groupMembership ^. GroupMembershipState
                     )
+
+    companiesWidget <- getUserCompanies userId
 
     defaultLayout $ do
         setTitle . toHtml $ userIdent user `mappend` "'s User page"

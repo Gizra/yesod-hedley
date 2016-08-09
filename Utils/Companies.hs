@@ -1,12 +1,11 @@
-module Handler.User where
+module Utils.Companies where
 
 import           Import
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.))
-import Utils.Companies
 
-getUserR :: UserId -> Handler Html
-getUserR userId = do
+-- getUserCompanies :: UserId -> Handler Html
+getUserCompanies userId = do
     user <- runDB $ get404 userId
 
     companies <- runDB
@@ -20,8 +19,4 @@ getUserR userId = do
                     , groupMembership ^. GroupMembershipState
                     )
 
-    companiesWidget <- getUserCompanies userId
-
-    defaultLayout $ do
-        setTitle . toHtml $ userIdent user `mappend` "'s User page"
-        $(widgetFile "user")
+    return $ $(widgetFile "companies")

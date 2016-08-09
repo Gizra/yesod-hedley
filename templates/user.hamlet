@@ -1,15 +1,4 @@
 <h1>
   #{userIdent user}
 
-
-$if null companies
-  <div>
-    You don't have any companies yet.
-
-$else
-  <.page-header><h2>Companies
-
-  <ul>
-    $forall (E.Value title, E.Value state) <- companies
-      <li>
-        #{title} (#{show state})
+^{companiesWidget}
