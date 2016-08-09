@@ -12,13 +12,13 @@ getPeopleR = do
     (people, pagerWidget) <- runDB $ selectPaginated 2 [] [ Desc UserId ] :: Handler ([Entity User],  WidgetT App IO ())
 
     let ppl = fmap entityVal people
-    let table = Table.buildBootstrap peopleTable ppl
+    let table = Table.buildBootstrap peopleTable people
 
     defaultLayout $ do
         setTitle "People List"
         $(widgetFile "people")
 
-peopleTable :: Table site User
+peopleTable :: Table App (Entity User)
 peopleTable = mempty
-    ++ Table.text   "Username"  userIdent
-    ++ Table.text   "Email"     userEmail
+    ++ Table.linked "Username" (userIdent . entityVal) (UserR . entityKey)
+    ++ Table.text   "Email"    (userEmail . entityVal)
