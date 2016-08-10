@@ -74,6 +74,7 @@ instance Yesod App where
         -- value passed to hamletToRepHtml cannot be a widget, this allows
         -- you to use normal widget features in default-layout.
 
+        (title, parents) <- breadcrumbs
         pc <- widgetToPageContent $ do
             addStylesheet $ StaticR css_bootstrap_css
             $(widgetFile "default-layout")
@@ -184,6 +185,16 @@ instance YesodAuth App where
         return $ case catMaybes [defaultAuth, tokenAuth] of
             [] -> Nothing
             (x : _) -> Just x
+
+instance YesodBreadcrumbs App where
+  breadcrumb HomeR      = return ("home", Nothing)
+  breadcrumb MyAccountR = return ("My Account", Just HomeR)
+  breadcrumb PeopleR = return ("People", Just HomeR)
+  breadcrumb (UserR userId) = do
+    user <- runDB $ get404 userId
+    return (userIdent user ++ "'s account", Just PeopleR)
+  breadcrumb  _ = return ("home", Nothing)
+
 
 instance YesodAuthPersist App
 

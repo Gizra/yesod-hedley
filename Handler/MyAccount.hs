@@ -1,11 +1,13 @@
 module Handler.MyAccount where
 
 import Import
+import Utils.Companies
 
 getMyAccountR :: Handler Html
 getMyAccountR = do
-    (_, user) <- requireAuthPair
+    (userId, user) <- requireAuthPair
+    companiesWidget <- getUserCompanies userId
 
     defaultLayout $ do
-        setTitle "Account"
-        $(widgetFile "my-account")
+        setTitle . toHtml $ userIdent user `mappend` "'s User page"
+        $(widgetFile "user")

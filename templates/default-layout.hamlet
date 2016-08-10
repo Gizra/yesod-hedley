@@ -1,3 +1,14 @@
 $maybe msg <- mmsg
   <div #message>#{msg}
+
+<nav #breadcrumbs>
+  <span>
+    $forall bc <- parents
+      <span>
+        <a href=@{fst bc}>#{snd bc}
+        \ &gt;
+
+    <span>
+        #{title}
+
 ^{widget}
