@@ -14,7 +14,7 @@ getMyAccountR = do
            . E.from $ \(company `E.InnerJoin` groupMembership) -> do
                 E.on $ company ^. CompanyId E.==. groupMembership ^. GroupMembershipCompanyId
                 E.where_ $ groupMembership ^. GroupMembershipUserId E.==. E.val userId
-                E.limit 5
+                E.limit 50
                 return
                     ( company ^. CompanyTitle
                     , groupMembership ^. GroupMembershipState
