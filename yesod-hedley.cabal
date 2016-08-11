@@ -30,6 +30,7 @@ library
                      Handler.MyAccount
                      Handler.User
                      Utils.Companies
+                     Utils.Table
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT

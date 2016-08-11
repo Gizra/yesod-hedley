@@ -1,9 +1,4 @@
-<h1.jumbotron>
-  Welcome to Yesod!
-
-<.page-header><h2>Starting
-
-<section>
+<section .ui .segment .purple>
   <ul>
   $maybe uid <- muid
     <li> <a href="@{MyAccountR}">My Account</a>

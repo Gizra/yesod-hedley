@@ -20,9 +20,13 @@ before_install:
 
   - export PATH=/opt/ghc/7.8.4/bin:$PATH
 
+  - cd static/src
+  - npm install --global gulp-cli
+  - gulp build
+
 install:
   - stack setup --no-terminal
-  - stack build --only-snapshot --no-terminal  
+  - stack build --only-snapshot --no-terminal
 
 script:
   - stack --no-terminal --skip-ghc-check test
