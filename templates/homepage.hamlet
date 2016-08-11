@@ -4,11 +4,9 @@
     <li> <a href="@{MyAccountR}">My Account</a>
     <li> <a href="@{PeopleR}">People</a>
     <li> <a href="@{EventsR}">Events</a>
-    <li> <a href=@{AuthR LogoutR}> Logout
+    <li> <a href="@{AuthR LogoutR}">Logout</a>
   $nothing
-    <li> <a href="@{AuthR LoginR}">Login
-
-
+    <li> <a href="@{AuthR LoginR}">Login</a>
 
 <section.page-header>
   <h2>Forms
