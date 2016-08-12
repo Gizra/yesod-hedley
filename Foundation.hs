@@ -76,7 +76,7 @@ instance Yesod App where
 
         (title, parents) <- breadcrumbs
         pc <- widgetToPageContent $ do
-            addStylesheet $ StaticR css_bootstrap_css
+            addStylesheet $ StaticR css_semantic_min_css
             $(widgetFile "default-layout")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
