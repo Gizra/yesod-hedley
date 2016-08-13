@@ -8,7 +8,6 @@
     <span>
         #{title}
 
-
 $maybe msg <- mmsg
   <div.ui.message #message>#{msg}
 
