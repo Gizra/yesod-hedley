@@ -40,14 +40,23 @@ getAddMembershipR :: Handler Html
 getAddMembershipR =  do
     (userId, _) <- requireAuthPair
     companies <- getGroupsUserIsNotMemberOf userId
-    -- Generate the form to be displayed
-    (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
-    defaultLayout
-        [whamlet|
-          <form class="ui form" method=post action=@{AddMembershipR} enctype=#{enctype}>
-              ^{widget}
-              <button.ui.primary.button>Create membership
-        |]
+
+    if (null companies)
+      then do
+        -- User has no other groups to subscribe to.
+        defaultLayout
+            [whamlet|
+              You are already subscribed to all groups!
+            |]
+      else do
+        -- Generate the form to be displayed.
+        (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
+        defaultLayout
+            [whamlet|
+              <form class="ui form" method=post action=@{AddMembershipR} enctype=#{enctype}>
+                  ^{widget}
+                  <button.ui.primary.button>Create membership
+            |]
 
 postAddMembershipR :: Handler Html
 postAddMembershipR = do
