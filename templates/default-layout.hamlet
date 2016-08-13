@@ -9,4 +9,5 @@
 $maybe msg <- mmsg
   <div.ui.message #message>#{msg}
 
-^{widget}
+<div.content>
+  ^{widget}
