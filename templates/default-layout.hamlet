@@ -1,12 +1,10 @@
-<nav #breadcrumbs>
-  <span>
-    $forall bc <- parents
-      <span>
-        <a href=@{fst bc}>#{snd bc}
-        \ &gt;
+<div.ui.breadcrumb>
+  $forall bc <- parents
+    <a.section href=@{fst bc}>#{snd bc}
+    <div.divider> /
 
-    <span>
-        #{title}
+  <div.active.section>
+      #{title}
 
 $maybe msg <- mmsg
   <div.ui.message #message>#{msg}
