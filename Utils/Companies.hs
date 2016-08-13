@@ -16,6 +16,7 @@ getUserCompanies userId = do
                 E.limit 5
                 return
                     ( company ^. CompanyTitle
+                    , company ^. CompanyId
                     , groupMembership ^. GroupMembershipState
                     )
 

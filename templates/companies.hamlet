@@ -6,6 +6,7 @@ $else
   <.page-header><h2>Companies
 
   <ul>
-    $forall (E.Value title, E.Value state) <- companies
+    $forall (E.Value title, E.Value companyId, E.Value state) <- companies
       <li>
-        #{title} (#{show state})
+        <a href="@{CompanyR companyId}">#{title}
+        (#{show state})
