@@ -2,6 +2,8 @@ module Handler.AddMembership where
 
 import Import
 import State (GroupMembershipState(..))
+import qualified Database.Esqueleto   as E
+import           Database.Esqueleto      ((^.))
 
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
@@ -23,10 +25,22 @@ membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
           optionsPairs $ map (\company -> (companyTitle $ entityVal company, entityKey company)) entities
 
 
+getValidCompanies userId = do
+    runDB
+        . E.select
+        . E.from $ \(company `E.LeftOuterJoin` groupMembership) -> do
+            E.on $ company ^. CompanyId E.==. groupMembership ^. GroupMembershipCompanyId
+            -- E.where_ $ E.isNothing (groupMembership ^. GroupMembershipCompanyId)
+            return
+                ( company ^. CompanyId
+                , company ^. CompanyTitle
+                )
 
 getAddMembershipR :: Handler Html
 getAddMembershipR =  do
     (userId, _) <- requireAuthPair
+    companies <- getValidCompanies userId
+    liftIO $ print companies
     -- Generate the form to be displayed
     (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
     defaultLayout
