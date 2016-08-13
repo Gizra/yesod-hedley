@@ -6,4 +6,4 @@ database:
   # something like:
   #
   #   database: "_env:MYSQL_DATABASE:yesod-hedley_test"
-  database: yesod-hedley_test
+  database: yesod_hedley_test
