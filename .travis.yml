@@ -28,7 +28,7 @@ install:
   - stack build --only-snapshot --no-terminal
 
 before_script:
-  - mysql -e 'create database yesod-hedley_test;'
+  - mysql -e 'create database yesod-hedley_test;' -uroot
   # MySql has no password.
   - export MYSQL_PASSWORD=""
 
