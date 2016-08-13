@@ -7,4 +7,3 @@ database:
   #
   #   database: "_env:MYSQL_DATABASE:yesod-hedley_test"
   database: yesod-hedley_test
-  password: "_env:MYSQL_PASSWORD:"
