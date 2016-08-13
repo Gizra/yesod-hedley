@@ -29,6 +29,7 @@ library
                      Handler.People
                      Handler.MyAccount
                      Handler.User
+                     Handler.AddMembership
                      Utils.Companies
                      Utils.Table
 

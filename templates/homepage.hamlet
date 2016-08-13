@@ -3,6 +3,7 @@
   $maybe uid <- muid
     <li> <a href="@{MyAccountR}">My Account</a>
     <li> <a href="@{PeopleR}">People</a>
+    <li> <a href="@{AddMembershipR}">Add membership</a>
     <li> <a href="@{EventsR}">Events</a>
     <li> <a href="@{AuthR LogoutR}">Logout</a>
   $nothing

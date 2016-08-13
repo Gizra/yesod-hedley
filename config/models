@@ -38,6 +38,7 @@ GroupMembership
     created UTCTime default=CURRENT_TIME
     userId UserId
     companyId CompanyId
+    UniqueMembershipUserId userId companyId
     deriving Eq
     deriving Show
 

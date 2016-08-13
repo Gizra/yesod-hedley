@@ -14,3 +14,4 @@
 /people PeopleR GET
 /account MyAccountR GET
 /user/#UserId UserR GET
+/add-membership AddMembershipR GET POST
