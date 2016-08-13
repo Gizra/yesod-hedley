@@ -1,6 +1,6 @@
 $if null companies
   <div>
-    No companies yet. <a href="@{AddMembershipR}">Add new ones</a>
+    No companies yet.
 
 $else
   <.page-header><h2>Companies
