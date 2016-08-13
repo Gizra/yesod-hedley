@@ -196,6 +196,9 @@ instance YesodBreadcrumbs App where
   breadcrumb AddMembershipR = return ("Membership", Just HomeR)
   breadcrumb MyAccountR = return ("My Account", Just HomeR)
   breadcrumb PeopleR = return ("People", Just HomeR)
+  breadcrumb (CompanyR companyId) = do
+    company <- runDB $ get404 companyId
+    return (companyTitle company, Just HomeR)
   breadcrumb (UserR userId) = do
     user <- runDB $ get404 userId
     return (userIdent user ++ "'s account", Just PeopleR)
