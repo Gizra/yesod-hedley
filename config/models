@@ -1,6 +1,6 @@
 User
     ident Text
-    email Email
+    email Text
     password Text Maybe
     verkey VerKey Maybe
     UniqueUser ident
@@ -35,7 +35,7 @@ Event
 
 GroupMembership
     state GroupMembershipState
-    created UTCTime default=CURRENT_TIME
+    created UTCTime
     userId UserId
     companyId CompanyId
     UniqueMembershipUserId userId companyId
@@ -43,7 +43,7 @@ GroupMembership
     deriving Show
 
 AccessToken
-    created UTCTime default=CURRENT_TIME
+    created UTCTime
     userId UserId
     token Text
     UniqueUserId userId
