@@ -6,7 +6,7 @@
       #{title}
 
     <div.meta>
-      <span.date>Joined in 2013
+      <span.date>@todo
 
     <div.description>
-      Created by #{authorName}
+      Created by <a href="@{UserR authorUserId}">#{authorName}</a>
