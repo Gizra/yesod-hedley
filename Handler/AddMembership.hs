@@ -25,6 +25,8 @@ membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
           optionsPairs $ map (\company -> (companyTitle $ entityVal company, entityKey company)) entities
 
 
+-- getValidCompanies :: UserId -> HandlerT site IO [Entity Company]
+getValidCompanies :: UserId -> Handler [Entity Company]
 getValidCompanies userId = do
     runDB
         . E.select
@@ -38,7 +40,6 @@ getAddMembershipR :: Handler Html
 getAddMembershipR =  do
     (userId, _) <- requireAuthPair
     companies <- getValidCompanies userId
-    liftIO $ print companies
     -- Generate the form to be displayed
     (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
     defaultLayout
