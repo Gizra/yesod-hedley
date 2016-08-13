@@ -2,45 +2,61 @@ module Handler.AddMembership where
 
 import Import
 import State (GroupMembershipState(..))
+import qualified Database.Esqueleto   as E
+import           Database.Esqueleto      ((^.), (?.), (&&.))
 
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
-    <$> areq (selectField optionsEnum) stateSettings (Just State.Active)
+    <$> areq (selectField optionsEnum) (selectSettings "State") (Just State.Active)
     <*> lift (liftIO getCurrentTime)
     <*> pure userId
-    <*> areq (selectField companies) companySettings Nothing
+    <*> areq (selectField companies) (selectSettings "Company") Nothing
     where
-        stateSettings = FieldSettings
-          { fsLabel = "State"
-          , fsTooltip = Nothing
-          , fsId = Nothing
-          , fsName = Nothing
-          , fsAttrs = [("class", "ui fluid dropdown")]
-          }
-        companySettings = FieldSettings
-          { fsLabel = "Company"
-          , fsTooltip = Nothing
-          , fsId = Nothing
-          , fsName = Nothing
-          , fsAttrs = [("class", "ui fluid dropdown")]
-          }
+        selectSettings label =
+          FieldSettings
+            { fsLabel = label
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs = [("class", "ui fluid dropdown")]
+            }
         companies = do
-          entities <- runDB $ selectList [] [Asc CompanyTitle]
+          entities <- getGroupsUserIsNotMemberOf userId
           optionsPairs $ map (\company -> (companyTitle $ entityVal company, entityKey company)) entities
 
 
+-- Return the companies a user is not a member of.
+getGroupsUserIsNotMemberOf :: UserId -> Handler [Entity Company]
+getGroupsUserIsNotMemberOf userId = do
+    runDB
+        . E.select
+        . E.from $ \(company `E.LeftOuterJoin` groupMembership) -> do
+            E.on $ E.just (company ^. CompanyId) E.==. (groupMembership ?. GroupMembershipCompanyId) &&.
+                   (groupMembership ?. GroupMembershipUserId) E.==. E.just (E.val userId)
+            E.where_ $ E.isNothing (groupMembership ?. GroupMembershipCompanyId)
+            return company
 
 getAddMembershipR :: Handler Html
 getAddMembershipR =  do
     (userId, _) <- requireAuthPair
-    -- Generate the form to be displayed
-    (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
-    defaultLayout
-        [whamlet|
-          <form class="ui form" method=post action=@{AddMembershipR} enctype=#{enctype}>
-              ^{widget}
-              <button.ui.primary.button>Create membership
-        |]
+    companies <- getGroupsUserIsNotMemberOf userId
+
+    if (null companies)
+      then do
+        -- User has no other groups to subscribe to.
+        defaultLayout
+            [whamlet|
+              You are already subscribed to all groups!
+            |]
+      else do
+        -- Generate the form to be displayed.
+        (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
+        defaultLayout
+            [whamlet|
+              <form class="ui form" method=post action=@{AddMembershipR} enctype=#{enctype}>
+                  ^{widget}
+                  <button.ui.primary.button>Create membership
+            |]
 
 postAddMembershipR :: Handler Html
 postAddMembershipR = do
