@@ -21,13 +21,13 @@ membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
             , fsAttrs = [("class", "ui fluid dropdown")]
             }
         companies = do
-          entities <- getValidCompanies userId
+          entities <- getGroupsUserIsNotMemberOf userId
           optionsPairs $ map (\company -> (companyTitle $ entityVal company, entityKey company)) entities
 
 
--- getValidCompanies :: UserId -> HandlerT site IO [Entity Company]
-getValidCompanies :: UserId -> Handler [Entity Company]
-getValidCompanies userId = do
+-- Return the companies a user is not a member of.
+getGroupsUserIsNotMemberOf :: UserId -> Handler [Entity Company]
+getGroupsUserIsNotMemberOf userId = do
     runDB
         . E.select
         . E.from $ \(company `E.LeftOuterJoin` groupMembership) -> do
@@ -39,7 +39,7 @@ getValidCompanies userId = do
 getAddMembershipR :: Handler Html
 getAddMembershipR =  do
     (userId, _) <- requireAuthPair
-    companies <- getValidCompanies userId
+    companies <- getGroupsUserIsNotMemberOf userId
     -- Generate the form to be displayed
     (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
     defaultLayout
