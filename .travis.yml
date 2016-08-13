@@ -5,6 +5,9 @@ cache:
   directories:
   - $HOME/.stack
 
+services:
+  - mysql
+
 addons:
   apt:
     sources:
@@ -23,6 +26,11 @@ before_install:
 install:
   - stack setup --no-terminal
   - stack build --only-snapshot --no-terminal
+
+before_script:
+  - mysql -e "create database yesod_hedley_test;"
+  # MySql has no password.
+  - export MYSQL_PASSWORD=""
 
 script:
   - stack --no-terminal --skip-ghc-check test
