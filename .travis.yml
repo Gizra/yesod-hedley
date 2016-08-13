@@ -24,5 +24,8 @@ install:
   - stack setup --no-terminal
   - stack build --only-snapshot --no-terminal
 
+before_script:
+  - mysql -e 'create database yesod-hedley_test;'
+
 script:
   - stack --no-terminal --skip-ghc-check test
