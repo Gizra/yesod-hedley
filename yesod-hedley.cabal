@@ -30,6 +30,7 @@ library
                      Handler.MyAccount
                      Handler.User
                      Handler.AddMembership
+                     Handler.Company
                      Utils.Companies
                      Utils.Table
 
