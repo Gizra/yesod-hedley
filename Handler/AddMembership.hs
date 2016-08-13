@@ -5,25 +5,19 @@ import State (GroupMembershipState(..))
 
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
-    <$> areq (selectField optionsEnum) stateSettings (Just State.Active)
+    <$> areq (selectField optionsEnum) (selectSettings "State") (Just State.Active)
     <*> lift (liftIO getCurrentTime)
     <*> pure userId
-    <*> areq (selectField companies) companySettings Nothing
+    <*> areq (selectField companies) (selectSettings "Company") Nothing
     where
-        stateSettings = FieldSettings
-          { fsLabel = "State"
-          , fsTooltip = Nothing
-          , fsId = Nothing
-          , fsName = Nothing
-          , fsAttrs = [("class", "ui fluid dropdown")]
-          }
-        companySettings = FieldSettings
-          { fsLabel = "Company"
-          , fsTooltip = Nothing
-          , fsId = Nothing
-          , fsName = Nothing
-          , fsAttrs = [("class", "ui fluid dropdown")]
-          }
+        selectSettings label =
+          FieldSettings
+            { fsLabel = label
+            , fsTooltip = Nothing
+            , fsId = Nothing
+            , fsName = Nothing
+            , fsAttrs = [("class", "ui fluid dropdown")]
+            }
         companies = do
           entities <- runDB $ selectList [] [Asc CompanyTitle]
           optionsPairs $ map (\company -> (companyTitle $ entityVal company, entityKey company)) entities
