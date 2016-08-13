@@ -14,4 +14,4 @@ spec = withApp .
                 , userVerkey = Nothing
                 }
             get $ UserR uid
-            statusIs 200
+            statusIs 403
