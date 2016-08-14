@@ -41,6 +41,7 @@ packages:
 # (e.g., acme-missiles-0.3)
 extra-deps:
 - yesod-paginator-0.10.0
+- stm-lifted-0.1.0.0
 
 
 # Override default flag values for local packages and extra-deps

@@ -93,6 +93,7 @@ instance Yesod App where
     isAuthorized HomeR _ = return Authorized
     isAuthorized CommentR _ = return Authorized
     isAuthorized (CompanyR _) _ = return Authorized
+    isAuthorized WebSocketsR _ = return Authorized
 
     isAuthorized AddMembershipR _ = isAuthenticated
     isAuthorized (EventR _) _ = isAuthenticated

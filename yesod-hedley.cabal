@@ -31,6 +31,7 @@ library
                      Handler.User
                      Handler.AddMembership
                      Handler.Company
+                     Handler.WebSockets
                      Utils.Companies
                      Utils.Table
 
@@ -100,6 +101,10 @@ library
                  , yesod-paginator
                  , attoparsec
                  , yesod-auth-oauth2
+                 , yesod-websockets
+                 , stm-lifted
+                 , conduit-combinators
+                 , transformers
 
 executable         yesod-hedley
     if flag(library-only)
@@ -117,6 +122,7 @@ test-suite test
     other-modules:     Handler.CommentSpec
                        Handler.CommonSpec
                        Handler.HomeSpec
+                       Handler.WebSockets
                        TestImport
     hs-source-dirs:    test
     ghc-options:       -Wall
@@ -143,6 +149,7 @@ test-suite test
                  , yesod-test >= 1.5.0.1 && < 1.6
                  , yesod-core
                  , yesod
+                 , yesod-websockets
                  , persistent
                  , persistent-mysql
                  , resourcet
