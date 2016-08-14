@@ -96,11 +96,7 @@ instance Monoid (Either Text [Filter Event]) where
   mappend (_) (Left b) = Left b
 
 
-getTotalCount :: ( YesodPersist site
-                 , YesodPersistBackend site ~ SqlBackend
-                 )
-              => [Filter Event]
-              -> HandlerT site IO Int
+getTotalCount :: [Filter Event] -> Handler Int
 getTotalCount filters =
   runDB $ count (filters :: [Filter Event])
 
