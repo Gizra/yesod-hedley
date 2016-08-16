@@ -31,6 +31,8 @@ library
                      Handler.User
                      Handler.AddMembership
                      Handler.Company
+                     Subsite.ServerSentEvent
+                     Subsite.ServerSentEvent.Data
                      Utils.Companies
                      Utils.Table
 
@@ -100,6 +102,7 @@ library
                  , yesod-paginator
                  , attoparsec
                  , yesod-auth-oauth2
+                 , blaze-builder
 
 executable         yesod-hedley
     if flag(library-only)

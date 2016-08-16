@@ -5,6 +5,9 @@ import State (GroupMembershipState(..))
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.), (?.), (&&.))
 
+import           Subsite.ServerSentEvent
+import           Subsite.ServerSentEvent.Data
+
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
     <$> areq (selectField optionsEnum) (selectSettings "State") (Just State.Active)

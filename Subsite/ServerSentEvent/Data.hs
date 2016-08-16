@@ -10,7 +10,7 @@ module Subsite.ServerSentEvent.Data where
 
 import           Blaze.ByteString.Builder.Char.Utf8  (fromText)
 import           Control.Concurrent.Chan
-import           Data.Aeson.Encode                   (encodeToByteStringBuilder)
+import           Data.Aeson.Encode                   (encode)
 import           Data.Monoid                         ((<>))
 import           Data.Text                           (Text)
 import           Network.Wai.EventSource
@@ -39,7 +39,7 @@ sendMessage app eventName eventId msg = do
   ServerSentEvent chan <- app
   liftIO $ writeChan chan
       $ ServerEvent (Just $ fromText eventName) (Just $ fromText eventId)
-      $ return $ encodeToByteStringBuilder msg
+      $ return $ encode msg
 
 getReceiveR :: ServerSentEventHandler ()
 getReceiveR = do
