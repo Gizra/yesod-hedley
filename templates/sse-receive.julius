@@ -1,7 +1,7 @@
 // Set up the receiving end.
 var src = new EventSource("@{SseReceiveR}");
 
-src.addEventListener('getUserR', function(msg) {
+src.addEventListener('AddMembershipR', function(msg) {
   updateServerSentEvent(msg);
 });
 

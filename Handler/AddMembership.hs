@@ -4,6 +4,7 @@ import Import
 import State (GroupMembershipState(..))
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.), (?.), (&&.))
+import Handler.SseReceive
 
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
@@ -64,7 +65,9 @@ postAddMembershipR = do
     ((result, widget), enctype) <- runFormPost $ membershipForm userId Nothing
     case result of
         FormSuccess membership -> do
-          _ <- runDB $ insert membership
+          mid <- runDB $ insert membership
+          sendMessage "AddMembershipR" "1" (Entity mid membership)
+
           setMessage "Membership saved"
           redirect AddMembershipR
         _ -> defaultLayout

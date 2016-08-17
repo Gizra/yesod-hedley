@@ -32,3 +32,12 @@ instance FromJSON Event where
         <*> o .: "user"
 
     parseJSON _ = mzero
+
+
+instance ToJSON (Entity GroupMembership) where
+    toJSON (Entity gid g) = object
+        [ "id"      .= (fromSqlKey gid)
+        , "created" .= groupMembershipCreated g
+        , "user"    .= groupMembershipUserId g
+        , "company" .= groupMembershipCompanyId g
+        ]
