@@ -3,7 +3,7 @@ var src = new EventSource("@{SseReceiveR}");
 
 console.log("@{SseReceiveR}");
 
-src.addEventListener('wiki-update', function(msg) {
+src.addEventListener('add-membership', function(msg) {
   updateServerSentEvent(msg);
 });
 

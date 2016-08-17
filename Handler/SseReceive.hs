@@ -2,13 +2,14 @@ module Handler.SseReceive where
 
 import Import
 import Blaze.ByteString.Builder.Char.Utf8  (fromText)
+import Data.Aeson.Encode (encode)
 import Network.Wai.EventSource
 
 getSseReceiveR :: Handler Html
 getSseReceiveR = do
-    chan0 <- fmap appServerEvent getYesod
-    chan <- liftIO $ dupChan chan0
-    sendWaiApplication $ eventSourceAppChan chan
+    chan <- fmap appServerEvent getYesod
+    duppedChan <- dupChan chan
+    sendWaiApplication $ eventSourceAppChan duppedChan
 
 -- sendMessage :: Text -> Text -> Text
 sendMessage eventName eventId msg = do

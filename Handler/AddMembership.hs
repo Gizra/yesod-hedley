@@ -67,6 +67,7 @@ postAddMembershipR = do
     case result of
         FormSuccess membership -> do
           _ <- runDB $ insert membership
+          sendMessage "add-membership" "foo" "@todo: Replace with membership"
           setMessage "Membership saved"
           redirect AddMembershipR
         _ -> defaultLayout

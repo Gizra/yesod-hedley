@@ -103,6 +103,7 @@ instance Yesod App where
     isAuthorized EventsR _ = isAuthenticated
     isAuthorized MyAccountR _ = isAuthenticated
     isAuthorized PeopleR _ = isAuthenticated
+    isAuthorized SseReceiveR _ = isAuthenticated
     isAuthorized (UserR _) _ = isAuthenticated
 
     -- This function creates static content files in the static folder
