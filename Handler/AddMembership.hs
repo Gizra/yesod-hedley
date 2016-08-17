@@ -5,8 +5,6 @@ import State (GroupMembershipState(..))
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.), (?.), (&&.))
 
-import           Handler.SseReceive
-
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
     <$> areq (selectField optionsEnum) (selectSettings "State") (Just State.Active)
@@ -46,13 +44,11 @@ getAddMembershipR =  do
     if (null companies)
       then do
         -- User has no other groups to subscribe to.
-        sendMessage "add-membership" "foo" "All memberships"
         defaultLayout
             [whamlet|
               You are already subscribed to all groups!
             |]
       else do
-        sendMessage "add-membership" "foo" "More memberships"
         -- Generate the form to be displayed.
         (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
         defaultLayout

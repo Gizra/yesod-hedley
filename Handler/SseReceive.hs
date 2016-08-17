@@ -2,7 +2,7 @@ module Handler.SseReceive where
 
 import Import
 import Blaze.ByteString.Builder.Char.Utf8  (fromText)
-import Data.Aeson.Encode (encode)
+import Data.Aeson.Encode (encodeToBuilder)
 import Network.Wai.EventSource
 --
 -- data Chat = Chat (Chan ServerEvent)
@@ -16,9 +16,9 @@ getSseReceiveR = do
     duppedChan <- dupChan chan
     sendWaiApplication $ eventSourceAppChan duppedChan
 
--- sendMessage :: Text -> Text -> Text
+sendMessage :: ToJSON a => Text -> Text -> a -> Handler ()
 sendMessage eventName eventId msg = do
     chan <- fmap appServerEvent getYesod
     liftIO $ writeChan chan
         $ ServerEvent (Just $ fromText eventName) (Just $ fromText eventId)
-        $ return $ fromText msg
+        $ return $ encodeToBuilder $ toJSON msg

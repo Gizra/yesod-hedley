@@ -1,7 +1,7 @@
 // Set up the receiving end.
 var src = new EventSource("@{SseReceiveR}");
 
-src.addEventListener('add-membership', function(msg) {
+src.addEventListener('getUserR', function(msg) {
   updateServerSentEvent(msg);
 });
 
@@ -10,8 +10,6 @@ src.onmessage = function(msg) {
 };
 
 updateServerSentEvent = function(msg) {
-  console.log(msg);
-  // Msg can now be easily parsed.
-  // var data = JSON.parse(msg.data);
-  // console.log(data);
+  var data = JSON.parse(msg.data);
+  console.log(data);
 };
