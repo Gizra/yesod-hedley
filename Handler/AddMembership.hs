@@ -46,11 +46,13 @@ getAddMembershipR =  do
     if (null companies)
       then do
         -- User has no other groups to subscribe to.
+        sendMessage "add-membership" "foo" "All memberships"
         defaultLayout
             [whamlet|
               You are already subscribed to all groups!
             |]
       else do
+        sendMessage "add-membership" "foo" "More memberships"
         -- Generate the form to be displayed.
         (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
         defaultLayout
@@ -67,7 +69,6 @@ postAddMembershipR = do
     case result of
         FormSuccess membership -> do
           _ <- runDB $ insert membership
-          sendMessage "add-membership" "foo" "@todo: Replace with membership"
           setMessage "Membership saved"
           redirect AddMembershipR
         _ -> defaultLayout
