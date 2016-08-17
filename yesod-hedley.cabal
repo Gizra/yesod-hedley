@@ -28,11 +28,10 @@ library
                      Handler.Event
                      Handler.People
                      Handler.MyAccount
+                     Handler.SseReceive
                      Handler.User
                      Handler.AddMembership
                      Handler.Company
-                     Subsite.ServerSentEvent
-                     Subsite.ServerSentEvent.Data
                      Utils.Companies
                      Utils.Table
 
@@ -120,6 +119,7 @@ test-suite test
     other-modules:     Handler.CommentSpec
                        Handler.CommonSpec
                        Handler.HomeSpec
+                       Handler.SseReceive
                        TestImport
     hs-source-dirs:    test
     ghc-options:       -Wall

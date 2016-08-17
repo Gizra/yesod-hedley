@@ -2,6 +2,8 @@ module Foundation where
 
 import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
+import Network.Wai.EventSource
+import Network.Wai.EventSource.EventStream
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Yesod.Auth.OAuth2.Github
@@ -21,6 +23,7 @@ data App = App
     , appConnPool    :: ConnectionPool -- ^ Database connection pool.
     , appHttpManager :: Manager
     , appLogger      :: Logger
+    , appServerEvent :: (Chan ServerEvent)
     }
 
 -- This is where we define all of the routes in our application. For a full

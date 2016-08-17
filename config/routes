@@ -16,3 +16,4 @@
 /user/#UserId UserR GET
 /add-membership AddMembershipR GET POST
 /company/#CompanyId CompanyR GET
+/sse-receive SseReceiveR GET
