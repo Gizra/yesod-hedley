@@ -33,10 +33,17 @@ instance FromJSON Event where
 
     parseJSON _ = mzero
 
+-- @todo: Find why we can't use "derive Generic" on GroupMembershipState.
+instance ToJSON (GroupMembershipState) where
+  toJSON State.Blocked = "blocked"
+  toJSON State.Pending = "pending"
+  toJSON State.Active = "active"
+
 
 instance ToJSON (Entity GroupMembership) where
     toJSON (Entity gid g) = object
         [ "id"      .= (fromSqlKey gid)
+        , "state"   .= groupMembershipState g
         , "created" .= groupMembershipCreated g
         , "user"    .= groupMembershipUserId g
         , "company" .= groupMembershipCompanyId g
