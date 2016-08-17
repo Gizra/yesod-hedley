@@ -4,11 +4,6 @@ import Import
 import Blaze.ByteString.Builder.Char.Utf8  (fromText)
 import Data.Aeson.Encode (encodeToBuilder)
 import Network.Wai.EventSource
---
--- data Chat = Chat (Chan ServerEvent)
---
--- type ChatHandler a =
---     HandlerT Chat a
 
 getSseReceiveR :: Handler ()
 getSseReceiveR = do
