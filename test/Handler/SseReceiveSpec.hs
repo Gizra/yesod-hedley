@@ -6,5 +6,6 @@ spec :: Spec
 spec = withApp $ do
 
     describe "getSseReceiveR" $ do
-        error "Spec not implemented: getSseReceiveR"
-
+      it "gives a 403" $ do
+          get SseReceiveR
+          statusIs 403

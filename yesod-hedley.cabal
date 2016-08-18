@@ -121,7 +121,7 @@ test-suite test
     other-modules:     Handler.CommentSpec
                        Handler.CommonSpec
                        Handler.HomeSpec
-                       Handler.SseReceive
+                       Handler.SseReceiveSpec
                        TestImport
     hs-source-dirs:    test
     ghc-options:       -Wall
