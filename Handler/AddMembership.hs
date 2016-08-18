@@ -1,10 +1,11 @@
 module Handler.AddMembership where
 
-import Import
-import State (GroupMembershipState(..))
+import           Import
+import           State (GroupMembershipState(..))
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.), (?.), (&&.))
-import Handler.SseReceive
+import           Utils.ServerSentEvent
+import           Utils.ServerSentEvent.Data
 
 membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
 membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership

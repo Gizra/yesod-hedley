@@ -34,6 +34,8 @@ library
                      Handler.Company
                      Utils.Companies
                      Utils.Table
+                     Utils.ServerSentEvent
+                     Utils.ServerSentEvent.Data
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
