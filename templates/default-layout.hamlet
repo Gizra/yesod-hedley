@@ -1,13 +1,71 @@
-<div.ui.breadcrumb>
-  $forall bc <- parents
-    <a.section href=@{fst bc}>#{snd bc}
-    <div.divider> /
+<!-- Following Menu -->
+<div class="ui large top fixed hidden menu">
+  <div class="ui container">
+    <a class="active item">Home
+    <a class="item">Work
+    <a class="item">Company
+    <a class="item">Careers
+    <div class="right menu">
+      <div class="item">
+        <a class="ui button">Log in
 
-  <div.active.section>
-      #{title}
+      <div class="item">
+        <a class="ui primary button">Sign Up
 
-$maybe msg <- mmsg
-  <div.ui.message #message>#{msg}
 
-<div.content>
-  ^{widget}
+
+
+
+<!-- Sidebar Menu -->
+<div class="ui vertical inverted sidebar menu">
+  <a class="active item">Home
+  <a class="item">Work
+  <a class="item">Company
+  <a class="item">Careers
+  <a class="item">Login
+  <a class="item">Signup
+
+
+
+<!-- Page Contents -->
+<div class="pusher">
+
+  <div.ui.breadcrumb>
+    $forall bc <- parents
+      <a.section href=@{fst bc}>#{snd bc}
+      <div.divider> /
+
+
+  $maybe msg <- mmsg
+    <div.ui.message #message>#{msg}
+
+  <div class="ui vertical stripe segment">
+    <div class="ui container">
+      ^{widget}
+
+
+  <!-- Footer -->
+  <div class="ui inverted vertical footer segment">
+    <div class="ui container">
+      <div class="ui stackable inverted divided equal height stackable grid">
+        <div class="three wide column">
+          <h4 class="ui inverted header">About
+          <div class="ui inverted link list">
+            <a href="#" class="item">Sitemap
+            <a href="#" class="item">Contact Us
+            <a href="#" class="item">Religious Ceremonies
+            <a href="#" class="item">Gazebo Plans
+
+
+        <div class="three wide column">
+          <h4 class="ui inverted header">Services
+          <div class="ui inverted link list">
+            <a href="#" class="item">Banana Pre-Order
+            <a href="#" class="item">DNA FAQ
+            <a href="#" class="item">How To Access
+            <a href="#" class="item">Favorite X-Men
+
+
+        <div class="seven wide column">
+          <h4 class="ui inverted header">Footer Header
+          <p>Extra space for a call to action inside the footer that could help re-engage users.

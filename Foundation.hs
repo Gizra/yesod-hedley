@@ -81,7 +81,10 @@ instance Yesod App where
         (title, parents) <- breadcrumbs
         pc <- widgetToPageContent $ do
             -- Semantic UI
-            addStylesheet $ StaticR css_semantic_min_css
+            addStylesheet $ StaticR semantic_semantic_min_css
+            addScript $ StaticR semantic_sidebar_min_js
+            addScript $ StaticR semantic_transition_min_js
+            addScript $ StaticR semantic_visibility_min_js
             -- Toastr
             addStylesheet $ StaticR toastr_toastr_min_css
             addScript $ StaticR toastr_toastr_min_js

@@ -43,11 +43,7 @@ $newline never
     <script>
       document.documentElement.className = document.documentElement.className.replace(/\bno-js\b/,'js');
   <body>
-    <header>
-    <div class="ui main container" role="main">
-      ^{pageBody pc}
-    <footer>
-      #{appCopyright $ appSettings master}
+    ^{pageBody pc}
 
     $maybe analytics <- appAnalytics $ appSettings master
       <script>
