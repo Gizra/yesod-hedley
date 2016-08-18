@@ -2,8 +2,11 @@ module Foundation where
 
 import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
+import Network.Wai.EventSource
+import Network.Wai.EventSource.EventStream
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
+import Utils.ServerSentEvent.Data
 import Yesod.Auth.OAuth2.Github
 import Yesod.Default.Util   (addStaticContentExternal)
 import Yesod.Core.Types     (Logger)
@@ -21,6 +24,7 @@ data App = App
     , appConnPool    :: ConnectionPool -- ^ Database connection pool.
     , appHttpManager :: Manager
     , appLogger      :: Logger
+    , appServerEvent :: (Chan ServerEvent)
     }
 
 -- This is where we define all of the routes in our application. For a full
@@ -77,8 +81,14 @@ instance Yesod App where
 
         (title, parents) <- breadcrumbs
         pc <- widgetToPageContent $ do
+            -- Semantic UI
             addStylesheet $ StaticR css_semantic_min_css
+            -- Toastr
+            addStylesheet $ StaticR toastr_toastr_min_css
+            addScript $ StaticR toastr_toastr_min_js
+
             $(widgetFile "default-layout")
+            $(widgetFile "sse-receive")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
     -- The page to be redirected to when authentication is required.
@@ -99,6 +109,7 @@ instance Yesod App where
     isAuthorized EventsR _ = isAuthenticated
     isAuthorized MyAccountR _ = isAuthenticated
     isAuthorized PeopleR _ = isAuthenticated
+    isAuthorized SseReceiveR _ = isAuthenticated
     isAuthorized (UserR _) _ = isAuthenticated
 
     -- This function creates static content files in the static folder

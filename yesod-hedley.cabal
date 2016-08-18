@@ -28,11 +28,14 @@ library
                      Handler.Event
                      Handler.People
                      Handler.MyAccount
+                     Handler.SseReceive
                      Handler.User
                      Handler.AddMembership
                      Handler.Company
                      Utils.Companies
                      Utils.Table
+                     Utils.ServerSentEvent
+                     Utils.ServerSentEvent.Data
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
@@ -100,6 +103,7 @@ library
                  , yesod-paginator
                  , attoparsec
                  , yesod-auth-oauth2
+                 , blaze-builder
 
 executable         yesod-hedley
     if flag(library-only)
@@ -117,6 +121,7 @@ test-suite test
     other-modules:     Handler.CommentSpec
                        Handler.CommonSpec
                        Handler.HomeSpec
+                       Handler.SseReceiveSpec
                        TestImport
     hs-source-dirs:    test
     ghc-options:       -Wall
