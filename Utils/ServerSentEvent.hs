@@ -9,9 +9,9 @@ import Utils.ServerSentEvent.Data
 import Import
 
 
-sendMessage :: ToJSON a => SseEventName -> Text -> a -> Handler ()
-sendMessage eventName eventId msg = do
+sendMessage :: ToJSON a => SseEventName -> a -> Handler ()
+sendMessage eventName msg = do
     chan <- fmap appServerEvent getYesod
     liftIO $ writeChan chan
-        $ ServerEvent (Just . encodeToBuilder $ toJSON eventName) (Just $ fromText eventId)
+        $ ServerEvent (Just . encodeToBuilder $ toJSON eventName) Nothing
         $ return $ encodeToBuilder $ toJSON msg

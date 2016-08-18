@@ -67,7 +67,7 @@ postAddMembershipR = do
     case result of
         FormSuccess membership -> do
           mid <- runDB $ insert membership
-          sendMessage AddMembership "1" (Entity mid membership)
+          sendMessage AddMembership (Entity mid membership)
 
           setMessage "Membership saved"
           redirect AddMembershipR
