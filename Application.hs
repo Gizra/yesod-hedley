@@ -16,6 +16,7 @@ module Application
 import Control.Monad.Logger                 (liftLoc, runLoggingT)
 import Database.Persist.MySQL               (createMySQLPool, myConnInfo,
                                              myPoolSize, runSqlPool)
+import Data.Pool
 import Import
 import Language.Haskell.TH.Syntax           (qLocation)
 import Network.Wai (Middleware)
@@ -91,6 +92,7 @@ makeFoundation appSettings = do
     -- Return the foundation
     return $ mkFoundation pool
 
+migrateData :: Pool SqlBackend -> IO ()
 migrateData pool = do
     -- Migrate data only if "admin" is missing.
     maybeUser <- runSqlPool (getBy $ UniqueUser "admin") pool

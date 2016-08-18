@@ -104,6 +104,7 @@ library
                  , attoparsec
                  , yesod-auth-oauth2
                  , blaze-builder
+                 , resource-pool
 
 executable         yesod-hedley
     if flag(library-only)

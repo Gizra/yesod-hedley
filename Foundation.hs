@@ -3,7 +3,6 @@ module Foundation where
 import Import.NoFoundation
 import Database.Persist.Sql (ConnectionPool, runSqlPool)
 import Network.Wai.EventSource
-import Network.Wai.EventSource.EventStream
 import Text.Hamlet          (hamletFile)
 import Text.Jasmine         (minifym)
 import Utils.ServerSentEvent.Data
@@ -141,6 +140,7 @@ instance Yesod App where
     makeLogger = return . appLogger
 
 
+isAuthenticated :: Handler AuthResult
 isAuthenticated = do
     mu <- maybeAuthId
     return $ case mu of

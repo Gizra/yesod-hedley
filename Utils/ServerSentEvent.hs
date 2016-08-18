@@ -2,7 +2,6 @@ module Utils.ServerSentEvent
   ( sendMessage
   ) where
 
-import Blaze.ByteString.Builder.Char.Utf8  (fromText)
 import Data.Aeson.Encode (encodeToBuilder)
 import Network.Wai.EventSource
 import Utils.ServerSentEvent.Data
