@@ -43,6 +43,19 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 -- | A convenient synonym for creating forms.
 type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
 
+data SseEventName = AddMembership | RemoveMembership
+    deriving (Show, Eq, Enum, Bounded, Read)
+
+getEventName :: SseEventName -> Text
+getEventName AddMembership = "AddMembership"
+getEventName RemoveMembership = "RemoveMembership"
+
+instance ToJSON (SseEventName) where
+  toJSON AddMembership = "AddMembership"
+  toJSON RemoveMembership = "RemoveMembership"
+
+
+
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod App where

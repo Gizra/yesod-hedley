@@ -11,9 +11,9 @@ getSseReceiveR = do
     duppedChan <- dupChan chan
     sendWaiApplication $ eventSourceAppChan duppedChan
 
-sendMessage :: ToJSON a => Text -> Text -> a -> Handler ()
+sendMessage :: ToJSON a => SseEventName -> Text -> a -> Handler ()
 sendMessage eventName eventId msg = do
     chan <- fmap appServerEvent getYesod
     liftIO $ writeChan chan
-        $ ServerEvent (Just $ fromText eventName) (Just $ fromText eventId)
+        $ ServerEvent (Just . encodeToBuilder $ toJSON eventName) (Just $ fromText eventId)
         $ return $ encodeToBuilder $ toJSON msg

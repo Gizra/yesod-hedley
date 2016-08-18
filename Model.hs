@@ -39,7 +39,6 @@ instance ToJSON (GroupMembershipState) where
   toJSON State.Pending = "pending"
   toJSON State.Active = "active"
 
-
 instance ToJSON (Entity GroupMembership) where
     toJSON (Entity gid g) = object
         [ "id"      .= (fromSqlKey gid)
