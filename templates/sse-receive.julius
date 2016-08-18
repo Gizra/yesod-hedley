@@ -12,4 +12,5 @@ src.onmessage = function(msg) {
 updateServerSentEvent = function(msg) {
   var data = JSON.parse(msg.data);
   console.log(data);
+  toastr.success('User ID ' + data.user + ' is now a member of company ID ' + data.company);
 };

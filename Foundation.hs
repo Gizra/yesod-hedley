@@ -81,7 +81,12 @@ instance Yesod App where
 
         (title, parents) <- breadcrumbs
         pc <- widgetToPageContent $ do
+            -- Semantic UI
             addStylesheet $ StaticR css_semantic_min_css
+            -- Toastr
+            addStylesheet $ StaticR toastr_toastr_min_css
+            addScript $ StaticR toastr_toastr_min_js
+
             $(widgetFile "default-layout")
             $(widgetFile "sse-receive")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
