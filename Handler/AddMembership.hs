@@ -7,8 +7,8 @@ import           Database.Esqueleto      ((^.), (?.), (&&.))
 import           Utils.ServerSentEvent
 import           Utils.ServerSentEvent.Data
 
-membershipForm :: UserId -> Maybe GroupMembership -> Form GroupMembership
-membershipForm userId mGroupMembership = renderSematnicUiDivs $ GroupMembership
+membershipForm :: UserId -> Form GroupMembership
+membershipForm userId = renderSematnicUiDivs $ GroupMembership
     <$> areq (selectField optionsEnum) (selectSettings "State") (Just State.Active)
     <*> lift (liftIO getCurrentTime)
     <*> pure userId
@@ -52,7 +52,7 @@ getAddMembershipR =  do
             |]
       else do
         -- Generate the form to be displayed.
-        (widget, enctype) <- generateFormPost $ membershipForm userId Nothing
+        (widget, enctype) <- generateFormPost $ membershipForm userId
         defaultLayout
             [whamlet|
               <form class="ui form" method=post action=@{AddMembershipR} enctype=#{enctype}>
@@ -63,7 +63,7 @@ getAddMembershipR =  do
 postAddMembershipR :: Handler Html
 postAddMembershipR = do
     (userId, _) <- requireAuthPair
-    ((result, widget), enctype) <- runFormPost $ membershipForm userId Nothing
+    ((result, widget), enctype) <- runFormPost $ membershipForm userId
     case result of
         FormSuccess membership -> do
           mid <- runDB $ insert membership
@@ -80,7 +80,8 @@ postAddMembershipR = do
             |]
 
 
---
+-- Adaptation of renderDivs.
+renderSematnicUiDivs :: Monad m => FormRender m a
 renderSematnicUiDivs = renderSematnicUiDivsMaybeLabels True
 
 -- Only difference here is that we add a ".field" class on the wrapper div.

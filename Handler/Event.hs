@@ -1,8 +1,6 @@
 module Handler.Event where
 
 import           Data.Aeson
-import           Data.Aeson.Types           (Value( String ))
-import           Database.Persist.Sql       (fromSqlKey)
 import qualified Data.HashMap.Strict  as HM (insert)
 import           Import
 

@@ -4,9 +4,9 @@ import           Import
 import qualified Database.Esqueleto   as E
 import           Database.Esqueleto      ((^.))
 
--- getUserCompanies :: UserId -> Handler Html
+getUserCompanies :: UserId -> Handler Widget
 getUserCompanies userId = do
-    user <- runDB $ get404 userId
+    _ <- runDB $ get404 userId
 
     companies <- runDB
            . E.select
