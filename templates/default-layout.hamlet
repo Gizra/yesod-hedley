@@ -7,7 +7,10 @@
     <a class="item">Careers
     <div class="right menu">
       <div class="item">
-        <a class="ui primary button">GitHub Login
+      $maybe user <- muser
+        <a class="ui primary button" href="@{MyAccountR}">My Account
+      $nothing
+        <a class="ui primary button" href="@{AuthR LoginR}">GitHub Login
 
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
@@ -32,8 +35,12 @@
         <a class="item">Company
         <a class="item">Careers
         <div class="right item">
-          <a class="ui inverted button">Log in
-          <a class="ui inverted button">Sign Up
+          $maybe user <- muser
+            <a class="ui inverted button" href="@{MyAccountR}">My Account
+          $nothing
+            <a class="ui inverted button" href="@{AuthR LoginR}">GitHub Login
+
+
 
     <div.ui.container>
       <div.ui.breadcrumb>

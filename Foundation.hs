@@ -79,6 +79,7 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         (title, parents) <- breadcrumbs
+        muser <- maybeAuthPair
         pc <- widgetToPageContent $ do
             -- Semantic UI
             addStylesheet $ StaticR semantic_semantic_min_css
