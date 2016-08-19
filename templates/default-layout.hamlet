@@ -40,8 +40,6 @@
           $nothing
             <a class="ui inverted button" href="@{AuthR LoginR}">GitHub Login
 
-
-
     <div.ui.container>
       <div.ui.breadcrumb>
         $forall bc <- parents

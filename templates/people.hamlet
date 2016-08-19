@@ -1,6 +1,8 @@
-<.page-header><h2>People
+<div.ui.container>
 
-^{table}
+  <.page-header><h2>People
 
-<div .pagination>
-  ^{pagerWidget}
+  ^{table}
+
+  <div .pagination>
+    ^{pagerWidget}
