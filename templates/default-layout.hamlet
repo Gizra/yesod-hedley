@@ -38,7 +38,7 @@
         <a.section href=@{fst bc}>#{snd bc}
         <div.divider> /
 
-          <div.active.section>
+      <div.active.section>
         #{title}
 
     $maybe msg <- mmsg
