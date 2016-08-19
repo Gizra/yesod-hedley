@@ -1,10 +1,8 @@
 <!-- Following Menu -->
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
-    <a class="active item">Home
-    <a class="item">Work
-    <a class="item">Company
-    <a class="item">Careers
+    <a class="active item" href="@{HomeR}">Home
+    <a class="item" href="@{PeopleR}">People
     <div class="right menu">
       <div class="item">
       $maybe user <- muser
@@ -14,12 +12,8 @@
 
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
-  <a class="active item">Home
-  <a class="item">Work
-  <a class="item">Company
-  <a class="item">Careers
-  <a class="item">Login
-  <a class="item">Signup
+  <a class="active item" href="@{HomeR}">Home
+  <a class="item" href="@{PeopleR}">People
 
 <!-- Page Contents -->
 <div class="pusher">
@@ -30,10 +24,8 @@
         <a class="toc item">
           <i class="sidebar icon"></i>
 
-        <a class="active item">Home
-        <a class="item">Work
-        <a class="item">Company
-        <a class="item">Careers
+        <a class="active item" href="@{HomeR}">Home
+        <a class="item" href="@{PeopleR}">People
         <div class="right item">
           $maybe user <- muser
             <a class="ui inverted button" href="@{MyAccountR}">My Account
