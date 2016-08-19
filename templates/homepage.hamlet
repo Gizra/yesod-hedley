@@ -1,7 +1,10 @@
-<section .ui .segment .purple>
+<div.ui.container>
+
+  $maybe user <- muser
+    <h1>Welcome back #{userIdent $ snd user}
 
   <ul>
-    $maybe uid <- muid
+    $maybe user <- muser
       <li> <a href="@{MyAccountR}">My Account</a>
       <li> <a href="@{PeopleR}">People</a>
       <li> <a href="@{AddMembershipR}">Add membership</a>

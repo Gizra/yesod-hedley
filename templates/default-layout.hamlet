@@ -7,14 +7,7 @@
     <a class="item">Careers
     <div class="right menu">
       <div class="item">
-        <a class="ui button">Log in
-
-      <div class="item">
-        <a class="ui primary button">Sign Up
-
-
-
-
+        <a class="ui primary button">GitHub Login
 
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
@@ -25,24 +18,34 @@
   <a class="item">Login
   <a class="item">Signup
 
-
-
 <!-- Page Contents -->
 <div class="pusher">
 
-  <div.ui.breadcrumb>
-    $forall bc <- parents
-      <a.section href=@{fst bc}>#{snd bc}
-      <div.divider> /
+  <div class="ui inverted vertical center aligned segment">
+    <div.ui.container>
+      <div class="ui large secondary inverted pointing menu">
+        <a class="toc item">
+          <i class="sidebar icon"></i>
 
+        <a class="active item">Home
+        <a class="item">Work
+        <a class="item">Company
+        <a class="item">Careers
+        <div class="right item">
+          <a class="ui inverted button">Log in
+          <a class="ui inverted button">Sign Up
 
-  $maybe msg <- mmsg
-    <div.ui.message #message>#{msg}
+    <div.ui.container>
+      <div.ui.breadcrumb>
+        $forall bc <- parents
+          <a.section href=@{fst bc}>#{snd bc}
+          <div.divider> /
 
-  <div class="ui vertical stripe segment">
-    <div class="ui container">
-      ^{widget}
+    $maybe msg <- mmsg
+      <div.ui.container>
+        <div.ui.message #message>#{msg}
 
+  ^{widget}
 
   <!-- Footer -->
   <div class="ui inverted vertical footer segment">
