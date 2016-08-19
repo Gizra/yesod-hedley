@@ -40,15 +40,17 @@
           $nothing
             <a class="ui inverted button" href="@{AuthR LoginR}">GitHub Login
 
-    <div.ui.container>
-      <div.ui.breadcrumb>
-        $forall bc <- parents
-          <a.section href=@{fst bc}>#{snd bc}
-          <div.divider> /
+  <div.ui.container>
+    <div.ui.breadcrumb>
+      $forall bc <- parents
+        <a.section href=@{fst bc}>#{snd bc}
+        <div.divider> /
+
+          <div.active.section>
+        #{title}
 
     $maybe msg <- mmsg
-      <div.ui.container>
-        <div.ui.message #message>#{msg}
+      <div.ui.message #message>#{msg}
 
   ^{widget}
 
