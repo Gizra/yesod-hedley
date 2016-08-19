@@ -43,6 +43,10 @@
    margin: 3em 0em;
  }
 
+ .ui.breadcrumb {
+   margin: 2em 0;
+ }
+
  .quote.stripe.segment {
    padding: 0em;
  }

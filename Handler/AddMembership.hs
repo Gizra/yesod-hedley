@@ -53,12 +53,7 @@ getAddMembershipR =  do
       else do
         -- Generate the form to be displayed.
         (widget, enctype) <- generateFormPost $ membershipForm userId
-        defaultLayout
-            [whamlet|
-              <form class="ui form" method=post action=@{AddMembershipR} enctype=#{enctype}>
-                  ^{widget}
-                  <button.ui.primary.button>Create membership
-            |]
+        defaultLayout $(widgetFile "add-membership")
 
 postAddMembershipR :: Handler Html
 postAddMembershipR = do
