@@ -80,6 +80,7 @@ instance Yesod App where
 
         (title, parents) <- breadcrumbs
         muser <- maybeAuthPair
+        let menu = getMenuWidget
         pc <- widgetToPageContent $ do
             -- Semantic UI
             addStylesheet $ StaticR semantic_semantic_min_css
@@ -91,6 +92,7 @@ instance Yesod App where
             addScript $ StaticR toastr_toastr_min_js
 
             $(widgetFile "default-layout")
+
             $(widgetFile "sse-receive")
         withUrlRenderer $(hamletFile "templates/default-layout-wrapper.hamlet")
 
@@ -244,3 +246,46 @@ unsafeHandler = Unsafe.fakeHandlerGetLogger appLogger
 -- https://github.com/yesodweb/yesod/wiki/Sending-email
 -- https://github.com/yesodweb/yesod/wiki/Serve-static-files-from-a-separate-domain
 -- https://github.com/yesodweb/yesod/wiki/i18n-messages-in-the-scaffolding
+
+
+
+data MenuItem = MenuItem
+  { _menuItemLabel :: Text
+  , _menuItemAnonymous :: Bool
+  , _menuItemAuthentictated :: Bool
+  , _menuItemRoute :: Route App
+  } deriving (Show)
+
+data Menu = LeftMenu MenuItem | RightMenu MenuItem
+  deriving (Show)
+
+getMenuItems :: [Menu]
+getMenuItems =
+  [ LeftMenu $ MenuItem
+    { _menuItemLabel = "Home"
+    , _menuItemAnonymous = False
+    , _menuItemAuthentictated = True
+    , _menuItemRoute = HomeR
+    }
+  , LeftMenu $ MenuItem
+    { _menuItemLabel = "People"
+    , _menuItemAnonymous = False
+    , _menuItemAuthentictated = True
+    , _menuItemRoute = PeopleR
+    }
+  ]
+
+getMenuWidget :: Widget
+getMenuWidget =
+  mconcat $ fmap getMenuItem getMenuItems
+
+
+getMenuItem :: Menu -> Widget
+getMenuItem menu =
+  case menu of
+    LeftMenu menuItem ->
+      [whamlet|
+        <a class="active item" href="@{_menuItemRoute menuItem}">#{_menuItemLabel menuItem}
+      |]
+    RightMenu _ ->
+      error "Implement me"

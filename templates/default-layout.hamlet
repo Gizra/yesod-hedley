@@ -1,8 +1,7 @@
 <!-- Following Menu -->
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
-    <a class="active item" href="@{HomeR}">Home
-    <a class="item" href="@{PeopleR}">People
+    #{menu}
     <div class="right menu">
       <div class="item">
       $maybe user <- muser
