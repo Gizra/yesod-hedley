@@ -33,9 +33,10 @@ library
                      Handler.AddMembership
                      Handler.Company
                      Utils.Companies
-                     Utils.Table
+                     Utils.Menu
                      Utils.ServerSentEvent
                      Utils.ServerSentEvent.Data
+                     Utils.Table
 
     if flag(dev) || flag(library-only)
         cpp-options:   -DDEVELOPMENT
