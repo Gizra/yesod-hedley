@@ -10,21 +10,38 @@ data MenuItem = MenuItem
   } deriving (Show)
 
 data Menu = LeftMenu MenuItem | RightMenu MenuItem
+  deriving (Show)
 
 getMenuItems :: [Menu]
 getMenuItems =
   [ LeftMenu $ MenuItem
     { _menuItemLabel = "Home"
-    , _menuItemAnonymous = True
+    , _menuItemAnonymous = False
     , _menuItemAuthentictated = True
     , _menuItemRoute = HomeR
     }
-
+  , LeftMenu $ MenuItem
+    { _menuItemLabel = "People"
+    , _menuItemAnonymous = False
+    , _menuItemAuthentictated = True
+    , _menuItemRoute = PeopleR
+    }
   ]
 
 getMenuWidget :: Handler Html
 getMenuWidget = do
-  defaultLayout
+  currentRoute <- getCurrentRoute
+  defaultLayout $
+     mconcat $ fmap getMenuItem getMenuItems
+
+
+
+getMenuItem :: Menu -> Widget
+getMenuItem menu =
+  case menu of
+    LeftMenu menuItem ->
       [whamlet|
-        Menu will be here
+        <a class="active item" href="@{_menuItemRoute menuItem}">#{_menuItemLabel menuItem}
       |]
+    RightMenu _ ->
+      error "Implement me"
