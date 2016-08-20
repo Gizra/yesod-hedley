@@ -4,7 +4,8 @@ import Import
 
 getHomeR :: Handler Html
 getHomeR = do
-    muid <- maybeAuthId
+    muser <- maybeAuthPair
+
     defaultLayout $ do
         setTitle "Welcome To Yesod!"
         $(widgetFile "homepage")

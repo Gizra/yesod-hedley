@@ -79,9 +79,13 @@ instance Yesod App where
         -- you to use normal widget features in default-layout.
 
         (title, parents) <- breadcrumbs
+        muser <- maybeAuthPair
         pc <- widgetToPageContent $ do
             -- Semantic UI
-            addStylesheet $ StaticR css_semantic_min_css
+            addStylesheet $ StaticR semantic_semantic_min_css
+            addScript $ StaticR semantic_sidebar_min_js
+            addScript $ StaticR semantic_transition_min_js
+            addScript $ StaticR semantic_visibility_min_js
             -- Toastr
             addStylesheet $ StaticR toastr_toastr_min_css
             addScript $ StaticR toastr_toastr_min_js
@@ -102,13 +106,13 @@ instance Yesod App where
     isAuthorized HomeR _ = return Authorized
     isAuthorized CommentR _ = return Authorized
     isAuthorized (CompanyR _) _ = return Authorized
+    isAuthorized SseReceiveR _ = return Authorized
 
     isAuthorized AddMembershipR _ = isAuthenticated
     isAuthorized (EventR _) _ = isAuthenticated
     isAuthorized EventsR _ = isAuthenticated
     isAuthorized MyAccountR _ = isAuthenticated
     isAuthorized PeopleR _ = isAuthenticated
-    isAuthorized SseReceiveR _ = isAuthenticated
     isAuthorized (UserR _) _ = isAuthenticated
 
     -- This function creates static content files in the static folder

@@ -1,12 +1,14 @@
-<div.ui.card>
-  <div.image>
-    <img src="http://placehold.it/350x350">
-  <div.content>
-    <a.header>
-      #{title}
+<div.ui.container>
 
-    <div.meta>
-      <span.date>@todo
+  <div.ui.card>
+    <div.image>
+      <img src="http://placehold.it/350x350">
+    <div.content>
+      <a.header>
+        #{title}
 
-    <div.description>
-      Created by <a href="@{UserR authorUserId}">#{authorName}</a>
+      <div.meta>
+        <span.date>@todo
+
+      <div.description>
+        Created by <a href="@{UserR authorUserId}">#{authorName}</a>

@@ -1,12 +1,13 @@
-$if null companies
-  <div>
-    No companies yet.
+<div.ui.container>
+  $if null companies
+    <div>
+      No companies yet.
 
-$else
-  <.page-header><h2>Companies
+  $else
+    <.page-header><h2>Companies
 
-  <ul>
-    $forall (E.Value title, E.Value companyId, E.Value state) <- companies
-      <li>
-        <a href="@{CompanyR companyId}">#{title}
-        (#{show state})
+    <ul>
+      $forall (E.Value title, E.Value companyId, E.Value state) <- companies
+        <li>
+          <a href="@{CompanyR companyId}">#{title}
+          (#{show state})

@@ -1,4 +1,6 @@
-<h1>
-  #{userIdent user}
+<div.ui.container>
 
-^{companiesWidget}
+  <h1>
+    #{userIdent user}
+
+  ^{companiesWidget}
