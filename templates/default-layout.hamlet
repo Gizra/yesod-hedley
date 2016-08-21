@@ -24,8 +24,9 @@
         <a class="toc item">
           <i class="sidebar icon"></i>
 
-        <a class="item" :Just HomeR == mcurr:.active href="@{HomeR}">Home
-        <a class="item" :Just PeopleR == mcurr:.active href="@{PeopleR}">People
+        $forall MenuItem label route _ <- filteredMenuItems
+          <a class="item" :Just route == mcurr:.active href="@{route}">#{label}
+
         <div class="right item">
           $maybe user <- muser
             <a class="ui inverted button" :Just MyAccountR == mcurr:.active href="@{MyAccountR}">My Account
