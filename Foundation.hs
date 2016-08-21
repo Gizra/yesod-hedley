@@ -47,7 +47,7 @@ data MenuItem = MenuItem
   { _menuItemLabel :: Text
   , _menuItemRoute :: Route App
   , _menuItemAccessCallback :: Bool
-  }
+  } deriving (Show)
 
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
