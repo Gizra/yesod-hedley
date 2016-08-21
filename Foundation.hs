@@ -101,7 +101,7 @@ instance Yesod App where
                 }
               ]
 
-        let filteredMenuItems = filter (\item -> _menuItemAccessCallback item == True) menuItems
+        let filteredMenuItems = [x | x <- menuItems, _menuItemAccessCallback x == True]
         pc <- widgetToPageContent $ do
             -- Semantic UI
             addStylesheet $ StaticR semantic_semantic_min_css
