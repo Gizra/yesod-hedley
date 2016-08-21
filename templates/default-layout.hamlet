@@ -24,14 +24,12 @@
         <a class="toc item">
           <i class="sidebar icon"></i>
 
-        $forall MenuItem label route _ <- filteredMenuItems
+        $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
           <a class="item" :Just route == mcurr:.active href="@{route}">#{label}
 
         <div class="right item">
-          $maybe user <- muser
-            <a class="ui inverted button" :Just MyAccountR == mcurr:.active href="@{MyAccountR}">My Account
-          $nothing
-            <a class="ui inverted button" href="@{AuthR LoginR}">GitHub Login
+          $forall MenuItem label route _ <- navbarRightFilteredMenuItems
+            <a class="ui inverted button" :Just route == mcurr:.active href="@{route}">#{label}
 
   <div.ui.container>
     <div.ui.breadcrumb>

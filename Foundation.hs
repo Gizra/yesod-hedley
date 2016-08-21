@@ -49,6 +49,10 @@ data MenuItem = MenuItem
   , _menuItemAccessCallback :: Bool
   } deriving (Show)
 
+data MenuTypes
+  = NavbarLeft MenuItem
+  | NavbarRight MenuItem
+
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod App where
@@ -89,19 +93,34 @@ instance Yesod App where
         mcurr <- getCurrentRoute
 
         let menuItems =
-              [ MenuItem
+              [ NavbarLeft $ MenuItem
                 { _menuItemLabel = "Home"
                 , _menuItemRoute = HomeR
                 , _menuItemAccessCallback = True
                 }
-              , MenuItem
+              , NavbarLeft $ MenuItem
                 { _menuItemLabel = "People"
                 , _menuItemRoute = PeopleR
                 , _menuItemAccessCallback = isJust muser
                 }
+              , NavbarRight $ MenuItem
+                { _menuItemLabel = "My Account"
+                , _menuItemRoute = MyAccountR
+                , _menuItemAccessCallback = isJust muser
+                }
+              , NavbarRight $ MenuItem
+                { _menuItemLabel = "GitHub Login"
+                , _menuItemRoute = AuthR LoginR
+                , _menuItemAccessCallback = isNothing muser
+                }
               ]
 
-        let filteredMenuItems = [x | x <- menuItems, _menuItemAccessCallback x == True]
+        let navbarLeftMenuItems = [x | NavbarLeft x <- menuItems]
+        let navbarRightMenuItems = [x | NavbarRight x <- menuItems]
+
+        let navbarLeftFilteredMenuItems = [x | x <- navbarLeftMenuItems, _menuItemAccessCallback x]
+        let navbarRightFilteredMenuItems = [x | x <- navbarRightMenuItems, _menuItemAccessCallback x]
+
         pc <- widgetToPageContent $ do
             -- Semantic UI
             addStylesheet $ StaticR semantic_semantic_min_css
