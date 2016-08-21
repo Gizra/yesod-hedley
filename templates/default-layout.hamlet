@@ -1,19 +1,18 @@
 <!-- Following Menu -->
 <div class="ui large top fixed hidden menu">
   <div class="ui container">
-    <a class="active item" href="@{HomeR}">Home
-    <a class="item" href="@{PeopleR}">People
+    $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
+      <a class="item" :Just route == mcurr:.active href="@{route}">#{label}
+
     <div class="right menu">
       <div class="item">
-      $maybe user <- muser
-        <a class="ui primary button" href="@{MyAccountR}">My Account
-      $nothing
-        <a class="ui primary button" href="@{AuthR LoginR}">GitHub Login
+        $forall MenuItem label route _ <- navbarRightFilteredMenuItems
+          <a class="ui inverted button" :Just route == mcurr:.active href="@{route}">#{label}
 
 <!-- Sidebar Menu -->
 <div class="ui vertical inverted sidebar menu">
-  <a class="active item" href="@{HomeR}">Home
-  <a class="item" href="@{PeopleR}">People
+  $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
+    <a class="item" :Just route == mcurr:.active href="@{route}">#{label}
 
 <!-- Page Contents -->
 <div class="pusher">
@@ -24,13 +23,12 @@
         <a class="toc item">
           <i class="sidebar icon"></i>
 
-        <a class="active item" href="@{HomeR}">Home
-        <a class="item" href="@{PeopleR}">People
+        $forall MenuItem label route _ <- navbarLeftFilteredMenuItems
+          <a class="item" :Just route == mcurr:.active href="@{route}">#{label}
+
         <div class="right item">
-          $maybe user <- muser
-            <a class="ui inverted button" href="@{MyAccountR}">My Account
-          $nothing
-            <a class="ui inverted button" href="@{AuthR LoginR}">GitHub Login
+          $forall MenuItem label route _ <- navbarRightFilteredMenuItems
+            <a class="ui inverted button" :Just route == mcurr:.active href="@{route}">#{label}
 
   <div.ui.container>
     <div.ui.breadcrumb>

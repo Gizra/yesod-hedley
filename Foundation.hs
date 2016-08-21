@@ -43,6 +43,16 @@ mkYesodData "App" $(parseRoutesFile "config/routes")
 -- | A convenient synonym for creating forms.
 type Form x = Html -> MForm (HandlerT App IO) (FormResult x, Widget)
 
+data MenuItem = MenuItem
+  { _menuItemLabel :: Text
+  , _menuItemRoute :: Route App
+  , _menuItemAccessCallback :: Bool
+  } deriving (Show)
+
+data MenuTypes
+  = NavbarLeft MenuItem
+  | NavbarRight MenuItem
+
 -- Please see the documentation for the Yesod typeclass. There are a number
 -- of settings which can be configured by overriding methods here.
 instance Yesod App where
@@ -80,6 +90,37 @@ instance Yesod App where
 
         (title, parents) <- breadcrumbs
         muser <- maybeAuthPair
+        mcurr <- getCurrentRoute
+
+        let menuItems =
+              [ NavbarLeft $ MenuItem
+                { _menuItemLabel = "Home"
+                , _menuItemRoute = HomeR
+                , _menuItemAccessCallback = True
+                }
+              , NavbarLeft $ MenuItem
+                { _menuItemLabel = "People"
+                , _menuItemRoute = PeopleR
+                , _menuItemAccessCallback = isJust muser
+                }
+              , NavbarRight $ MenuItem
+                { _menuItemLabel = "My Account"
+                , _menuItemRoute = MyAccountR
+                , _menuItemAccessCallback = isJust muser
+                }
+              , NavbarRight $ MenuItem
+                { _menuItemLabel = "GitHub Login"
+                , _menuItemRoute = AuthR LoginR
+                , _menuItemAccessCallback = isNothing muser
+                }
+              ]
+
+        let navbarLeftMenuItems = [x | NavbarLeft x <- menuItems]
+        let navbarRightMenuItems = [x | NavbarRight x <- menuItems]
+
+        let navbarLeftFilteredMenuItems = [x | x <- navbarLeftMenuItems, _menuItemAccessCallback x]
+        let navbarRightFilteredMenuItems = [x | x <- navbarRightMenuItems, _menuItemAccessCallback x]
+
         pc <- widgetToPageContent $ do
             -- Semantic UI
             addStylesheet $ StaticR semantic_semantic_min_css

@@ -4,9 +4,12 @@ import TestImport
 
 spec :: Spec
 spec = withApp $ do
-    it "loads the index" $ do
+    it "loads the index for anonymous user" $ do
         get HomeR
         statusIs 200
+
+        htmlAnyContain ".secondary.menu a" "Home"
+        htmlNoneContain ".secondary.menu a" "People"
 
     -- This is a simple example of using a database access in a test.  The
     -- test will succeed for a fresh scaffolded site with an empty database,
