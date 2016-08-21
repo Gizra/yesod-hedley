@@ -24,11 +24,11 @@
         <a class="toc item">
           <i class="sidebar icon"></i>
 
-        <a class="active item" href="@{HomeR}">Home
-        <a class="item" href="@{PeopleR}">People
+        <a class="item" :Just HomeR == mcurr:.active href="@{HomeR}">Home
+        <a class="item" :Just PeopleR == mcurr:.active href="@{PeopleR}">People
         <div class="right item">
           $maybe user <- muser
-            <a class="ui inverted button" href="@{MyAccountR}">My Account
+            <a class="ui inverted button" :Just MyAccountR == mcurr:.active href="@{MyAccountR}">My Account
           $nothing
             <a class="ui inverted button" href="@{AuthR LoginR}">GitHub Login
 

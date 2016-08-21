@@ -80,6 +80,7 @@ instance Yesod App where
 
         (title, parents) <- breadcrumbs
         muser <- maybeAuthPair
+        mcurr <- getCurrentRoute
         pc <- widgetToPageContent $ do
             -- Semantic UI
             addStylesheet $ StaticR semantic_semantic_min_css
